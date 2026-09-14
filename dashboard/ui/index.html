@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SIH26054 — DIGITAL TWIN</title>
+  <title>TRINETRA-AERO — DIGITAL TWIN</title>
   <link rel="stylesheet" href="style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -34,20 +34,17 @@
         </div>
         <div class="brand-text">
           <div class="brand-title-row">
-            <span class="brand-title">SIH26054</span>
+            <span class="brand-title">TRINETRA-AERO</span>
             <span class="brand-badge">DIGITAL TWIN</span>
           </div>
           <span class="brand-sub">TAPAS-BH-201 &bull; ROTAX 914 F TURBOCHARGED (115 HP)</span>
         </div>
       </div>
 
-      <!-- Center: Navigation Pill Group -->
+      <!-- Center: Navigation Pill Group (3 Primary Pages) -->
       <nav class="nav-pill-group" aria-label="Main Navigation">
         <button type="button" class="nav-pill active" data-nav="overview">Overview</button>
         <button type="button" class="nav-pill" data-nav="diagnostics">Diagnostics</button>
-        <button type="button" class="nav-pill" data-nav="telemetry">Telemetry</button>
-        <button type="button" class="nav-pill" data-nav="residuals">Residuals</button>
-        <button type="button" class="nav-pill" data-nav="history">History</button>
         <button type="button" class="nav-pill" data-nav="mission">Mission</button>
       </nav>
 
@@ -62,11 +59,6 @@
           </div>
         </div>
 
-        <!-- Search Round Button -->
-        <button type="button" class="btn-round" title="Search Telemetry" aria-label="Search Telemetry">
-          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-        </button>
-
         <!-- Compact Sun/Moon Theme Toggle Button -->
         <button type="button" class="btn-round" id="theme-toggle" title="Toggle Light/Dark Mode" aria-label="Toggle Light/Dark Mode">
           <svg class="theme-icon-sun" viewBox="0 0 24 24" style="display:none;"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
@@ -74,7 +66,7 @@
         </button>
 
         <!-- Profile / Identity Avatar -->
-        <div class="user-avatar" title="SIH26054 Mission Control">26054</div>
+        <div class="user-avatar" title="TRINETRA-AERO Mission Control">AERO</div>
       </div>
     </header>
 
@@ -154,579 +146,638 @@
       </div>
     </section>
 
-    <!-- ================= 3. MAIN CONTENT ROW: DIGITAL TWIN PERFORMANCE + FEATURE CARD ================= -->
-    <section class="main-feature-grid" aria-label="Digital Twin Engine Performance & Mission Risk">
-      <!-- Large Central Card: Performance Gauges + Live RPM/MAP Chart -->
-      <div class="card-main-performance">
-        <div class="card-header-split">
-          <div class="card-title-group">
-            <h2 class="card-title">Digital Twin &amp; Engine Performance</h2>
-            <span class="card-subtext">Real-time aircraft sensor stream vs physics baseline</span>
+    <!-- =====================================================================
+         PAGE 1: OVERVIEW (Primary System Summary, Powertrain, Health)
+         ===================================================================== -->
+    <div class="page-view" id="view-overview">
+      <!-- 3. MAIN CONTENT ROW: DIGITAL TWIN PERFORMANCE + OPERATIONAL STATUS -->
+      <section class="main-feature-grid" aria-label="Digital Twin Engine Performance & Mission Risk">
+        <!-- Large Central Card: Performance Gauges + Live RPM/MAP Chart -->
+        <div class="card-main-performance">
+          <div class="card-header-split">
+            <div class="card-title-group">
+              <h2 class="card-title">Digital Twin &amp; Engine Performance</h2>
+              <span class="card-subtext">Real-time aircraft sensor stream vs physics baseline</span>
+            </div>
+            <div class="range-controls" aria-label="Time Range">
+              <button type="button" class="range-btn">1m</button>
+              <button type="button" class="range-btn">5m</button>
+              <button type="button" class="range-btn">15m</button>
+              <button type="button" class="range-btn active">Live</button>
+            </div>
           </div>
-          <div class="range-controls" aria-label="Time Range">
-            <button type="button" class="range-btn">1m</button>
-            <button type="button" class="range-btn">5m</button>
-            <button type="button" class="range-btn">15m</button>
-            <button type="button" class="range-btn active">Live</button>
+
+          <div class="perf-interior-grid">
+            <!-- Left: Telemetry Readouts -->
+            <div class="perf-gauges-col">
+              <!-- Hero RPM Gauge -->
+              <div class="telemetry-hero-gauge">
+                <div class="gauge-caption-row">
+                  <span class="gauge-caption">Engine Speed</span>
+                  <span class="gauge-phase-tag">POWERTRAIN</span>
+                </div>
+                <div class="hero-number-row">
+                  <span class="hero-number-val mono" id="disp-rpm">0</span>
+                  <span class="hero-number-unit">RPM</span>
+                </div>
+                <div class="progress-track">
+                  <div class="progress-fill-yellow" id="meter-rpm" style="width: 0%;"></div>
+                </div>
+                <div class="gauge-sub-row">
+                  <span>Shaft Power: <strong class="mono" id="disp-power">0.0 kW</strong></span>
+                  <span>MAP: <strong class="mono" id="disp-map">0.0 kPa</strong></span>
+                </div>
+              </div>
+
+              <!-- Mini Supporting Telemetry Rows -->
+              <div class="mini-telemetry-list">
+                <!-- Oil Pressure -->
+                <div class="telemetry-row-item" id="card-oil-press">
+                  <div class="tel-label-group">
+                    <span class="tel-label">Oil Pressure</span>
+                  </div>
+                  <div class="tel-val-group">
+                    <span class="tel-val mono" id="disp-oil-p">0.00</span>
+                    <span class="tel-unit">bar</span>
+                  </div>
+                  <div class="progress-track" style="width: 50px;">
+                    <div class="progress-fill-green" id="meter-oil-p" style="width: 60%;"></div>
+                  </div>
+                </div>
+
+                <!-- Oil Temperature -->
+                <div class="telemetry-row-item" id="card-oil-temp">
+                  <div class="tel-label-group">
+                    <span class="tel-label">Oil Temperature</span>
+                  </div>
+                  <div class="tel-val-group">
+                    <span class="tel-val mono" id="disp-oil-t">0.0</span>
+                    <span class="tel-unit">&deg;C</span>
+                  </div>
+                  <div class="progress-track" style="width: 50px;">
+                    <div class="progress-fill-yellow" id="meter-oil-t" style="width: 65%;"></div>
+                  </div>
+                </div>
+
+                <!-- Coolant Temperature -->
+                <div class="telemetry-row-item" id="card-coolant">
+                  <div class="tel-label-group">
+                    <span class="tel-label">Coolant Temp</span>
+                  </div>
+                  <div class="tel-val-group">
+                    <span class="tel-val mono" id="disp-coolant">0.0</span>
+                    <span class="tel-unit">&deg;C</span>
+                  </div>
+                  <div class="progress-track" style="width: 50px;">
+                    <div class="progress-fill-yellow" id="meter-coolant" style="width: 70%;"></div>
+                  </div>
+                </div>
+
+                <!-- Vibration RMS -->
+                <div class="telemetry-row-item" id="card-vibration">
+                  <div class="tel-label-group">
+                    <span class="tel-label">Vibration RMS</span>
+                  </div>
+                  <div class="tel-val-group">
+                    <span class="tel-val mono" id="disp-vib">0.00</span>
+                    <span class="tel-unit">mm/s</span>
+                  </div>
+                  <div class="progress-track" style="width: 50px;">
+                    <div class="progress-fill-yellow" id="meter-vib" style="width: 25%;"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right: Live Canvas Chart -->
+            <div class="chart-canvas-wrap">
+              <div class="chart-legend-top mono">
+                <div class="legend-item">
+                  <span class="legend-dot dot-chart-yellow"></span>
+                  <span>Speed (RPM)</span>
+                </div>
+                <div class="legend-item">
+                  <span class="legend-dot dot-chart-yellow-subtle"></span>
+                  <span>MAP (kPa)</span>
+                </div>
+              </div>
+              <canvas id="chart-rpm-map" height="170"></canvas>
+            </div>
           </div>
         </div>
 
-        <div class="perf-interior-grid">
-          <!-- Left: Telemetry Readouts -->
-          <div class="perf-gauges-col">
-            <!-- Hero RPM Gauge -->
-            <div class="telemetry-hero-gauge">
-              <div class="gauge-caption-row">
-                <span class="gauge-caption">Engine Speed</span>
-                <span class="gauge-phase-tag">POWERTRAIN</span>
+        <!-- Right Feature Card: Operational Status -->
+        <aside class="card-feature-blue" aria-label="Tactical Mission Risk Assessment">
+          <div class="feature-top-row">
+            <div class="feature-heading-group">
+              <span class="feature-subhead">Operational Status</span>
+              <h2 class="feature-main-title" id="feature-card-risk-title">MISSION GO</h2>
+            </div>
+            <button type="button" class="btn-feature-round" title="Mission Details" aria-label="Mission Details" data-goto="mission">
+              <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </button>
+          </div>
+
+          <p class="feature-desc">
+            Current engine operating conditions, lubrication pressures, and cylinder thermal margins remain strictly within nominal flight envelopes.
+          </p>
+
+          <!-- Layered Information Cards Inside Blue Feature Card -->
+          <div class="feature-layered-cards">
+            <div class="feature-inner-card">
+              <div class="inner-meta-group">
+                <div class="inner-meta-label">Composite Health</div>
+                <div class="inner-sub-ci">&bull; EKF State Normal</div>
               </div>
-              <div class="hero-number-row">
-                <span class="hero-number-val mono" id="disp-rpm">0</span>
-                <span class="hero-number-unit">RPM</span>
+              <div class="inner-meta-val mono" id="feature-card-health">98.5%</div>
+            </div>
+
+            <div class="feature-inner-card">
+              <div class="inner-meta-group">
+                <div class="inner-meta-label">Remaining Useful Life</div>
+                <div class="inner-sub-ci">Overhaul Interval Target</div>
+              </div>
+              <div class="inner-meta-val mono" id="feature-card-rul">1,857 h</div>
+            </div>
+
+            <div class="feature-inner-card">
+              <div class="inner-meta-group">
+                <div class="inner-meta-label">Anomaly Confidence</div>
+                <div class="inner-sub-ci">Attribution Model</div>
+              </div>
+              <div class="inner-meta-val mono" id="disp-confidence" style="font-size: 13.5px;">95.0% (Nominal)</div>
+            </div>
+          </div>
+        </aside>
+      </section>
+
+      <!-- OVERVIEW SECONDARY ROW: HEALTH COCKPIT + DIGITAL TWIN STATUS -->
+      <section class="overview-secondary-grid" aria-label="Health Cockpit & Quick Status">
+        <!-- Center Statistics / Circular Health Cockpit Card -->
+        <div class="card-statistics">
+          <div class="card-title-group" style="width: 100%; text-align: left;">
+            <h2 class="card-title">Health Cockpit</h2>
+            <span class="card-subtext">Composite reliability index</span>
+          </div>
+
+          <div class="health-radial-wrap">
+            <svg class="health-svg" viewBox="0 0 160 160" aria-label="Engine Health Percentage Gauge">
+              <circle class="circle-track" cx="80" cy="80" r="70"></circle>
+              <circle class="circle-fill-meter" id="svg-health-meter" cx="80" cy="80" r="70"></circle>
+            </svg>
+            <div class="radial-center-text">
+              <span class="radial-big-val mono" id="disp-health-num-cockpit">98</span>
+              <span class="radial-unit">HEALTH</span>
+            </div>
+          </div>
+
+          <div class="stat-metric-pills">
+            <div class="stat-pill-row">
+              <span class="stat-pill-label">Mission Risk:</span>
+              <span class="stat-pill-val mono highlight-green" id="stat-risk-val">LOW RISK (GO)</span>
+            </div>
+            <div class="stat-pill-row">
+              <span class="stat-pill-label">Residual Norm (D_res):</span>
+              <span class="stat-pill-val mono highlight-yellow" id="stat-dres-val">1.45</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Powertrain Synopsis Card -->
+        <div class="card-overview-synopsis">
+          <div class="card-header-split">
+            <div class="card-title-group">
+              <h2 class="card-title">Powertrain &amp; Digital Twin Telemetry Synopsis</h2>
+              <span class="card-subtext">Closed-loop physics observer &amp; multi-sensor health surveillance</span>
+            </div>
+            <span class="status-chip mono" style="font-size: 11px;">
+              <span class="chip-dot"></span>
+              ALL SYSTEMS GO
+            </span>
+          </div>
+
+          <div class="synopsis-grid">
+            <div class="synopsis-item">
+              <span class="synopsis-label">EKF Tracking Mode</span>
+              <span class="synopsis-val text-yellow mono">Closed-Loop</span>
+              <span class="synopsis-sub">Real-time state innovation</span>
+            </div>
+            <div class="synopsis-item">
+              <span class="synopsis-label">Physical Degradation</span>
+              <span class="synopsis-val text-green mono">&eta; &gt; 96%</span>
+              <span class="synopsis-sub">Nominal thermodynamic margins</span>
+            </div>
+            <div class="synopsis-item">
+              <span class="synopsis-label">Multi-Cylinder Spread</span>
+              <span class="synopsis-val text-yellow mono">&lt; 6 &deg;C</span>
+              <span class="synopsis-sub">Balanced CHT/EGT profile</span>
+            </div>
+          </div>
+
+          <div class="synopsis-cta-row">
+            <button type="button" class="btn-synopsis-cta" data-goto="diagnostics">
+              Open Full Diagnostics Station &rarr;
+            </button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- =====================================================================
+         PAGE 2: DIAGNOSTICS (Fault Attribution, Advisory, Residuals & Degradation)
+         ===================================================================== -->
+    <div class="page-view is-hidden" id="view-diagnostics">
+      <!-- TOP: ACTIVE DIAGNOSTICS + MISSION ADVISORY -->
+      <section class="diag-top-grid" aria-label="Active Diagnostics and Mission Advisory">
+        <!-- Active Diagnostics Card (Incident-Card Style) -->
+        <div class="card-diagnostics">
+          <div class="card-header-split">
+            <div class="card-title-group">
+              <h2 class="card-title">Active Diagnostics</h2>
+              <span class="card-subtext">Physics-guided multi-variable fault attribution</span>
+            </div>
+            <span class="incident-badge" id="diag-status-badge">NOMINAL</span>
+          </div>
+
+          <div class="incident-card-item" id="incident-container">
+            <div class="incident-header-row">
+              <span class="status-chip mono" id="adv-diag-code">FC-00: NORMAL OPERATION</span>
+              <span class="incident-time-code mono">10 Hz EKF Loop</span>
+            </div>
+            <div class="incident-title" id="diag-fault-name">Engine Operating Nominally</div>
+            <div class="incident-subsystem" id="diag-subsystem">Affected Subsystem: None (Healthy)</div>
+            <p class="incident-desc" id="adv-root-cause">
+              All cylinder temperatures, pressures, and vibration signatures match Digital Twin expected baseline.
+            </p>
+          </div>
+        </div>
+
+        <!-- Right Mission Advisory Card -->
+        <div class="card-advisory" id="card-advisory">
+          <div class="card-header-split">
+            <div class="card-title-group">
+              <h2 class="card-title">Mission Advisory</h2>
+              <span class="card-subtext" id="adv-title">POWERTRAIN OPERATING NOMINALLY</span>
+            </div>
+            <span class="status-chip mono" id="adv-badge-urgency">NORMAL</span>
+          </div>
+
+          <!-- Advisory Category Pills -->
+          <div class="advisory-category-chips">
+            <button type="button" class="adv-chip active">Pilot Directives</button>
+            <button type="button" class="adv-chip">Maintenance Work Order</button>
+            <button type="button" class="adv-chip">Tactical Recommendations</button>
+          </div>
+
+          <!-- Pilot Directives Box -->
+          <div class="advisory-directive-box">
+            <div class="adv-box-header">
+              <svg viewBox="0 0 24 24"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+              <span>TACTICAL PILOT DIRECTIVES</span>
+            </div>
+            <ul class="adv-actions-list" id="adv-pilot-list">
+              <li>Powertrain operating within nominal green band.</li>
+              <li>Full mission flight envelope approved (Takeoff, Climb, Cruise, Loiter).</li>
+            </ul>
+          </div>
+
+          <!-- Maintenance Crew Directives Box -->
+          <div class="advisory-directive-box">
+            <div class="adv-box-header">
+              <svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+              <span>MAINTENANCE CREW WORK ORDER</span>
+            </div>
+            <ul class="adv-actions-list muted-list" id="adv-maint-list">
+              <li>Routine post-flight pre-flight inspection at next 25-hour service interval.</li>
+            </ul>
+          </div>
+
+          <!-- Bottom Assistant Input / Status Strip -->
+          <div class="advisory-bottom-input">
+            <span>10 Hz closed-loop advisory stream active</span>
+            <span class="mono">&bull; EKF SYNC</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- BOTTOM: DIGITAL TWIN RESIDUALS & PHYSICAL DEGRADATION STATES -->
+      <section class="diag-bottom-grid" aria-label="Digital Twin Residuals & Degradation States">
+        <!-- Digital Twin Residuals Card -->
+        <div class="card-residuals">
+          <div class="card-header-split">
+            <div class="card-title-group">
+              <h2 class="card-title">Digital Twin Residuals</h2>
+              <span class="card-subtext">Physics-informed closed-loop EKF observer vs aircraft telemetry</span>
+            </div>
+            <span class="status-chip mono" style="font-size: 11px;">
+              <span class="chip-dot dot-yellow"></span>
+              CLOSED-LOOP EKF
+            </span>
+          </div>
+
+          <!-- Residual Comparison Table -->
+          <div class="res-table-wrap">
+            <div class="res-table-head">
+              <span>CHANNEL</span>
+              <span class="align-right">EXPECTED</span>
+              <span class="align-right">OBSERVED</span>
+              <span class="align-right">RESIDUAL (&Delta;)</span>
+            </div>
+
+            <div class="res-table-row">
+              <span class="res-col-channel">Engine Speed</span>
+              <span class="res-col-exp mono" id="exp-rpm">--</span>
+              <span class="res-col-obs mono" id="obs-rpm">--</span>
+              <span class="res-col-diff mono" id="diff-rpm">0 RPM</span>
+            </div>
+
+            <div class="res-table-row">
+              <span class="res-col-channel">Manifold Pressure</span>
+              <span class="res-col-exp mono" id="exp-map">--</span>
+              <span class="res-col-obs mono" id="obs-map">--</span>
+              <span class="res-col-diff mono" id="diff-map">0.0 kPa</span>
+            </div>
+
+            <div class="res-table-row" id="row-oil-press">
+              <span class="res-col-channel">Oil Pressure</span>
+              <span class="res-col-exp mono" id="exp-oil-p">--</span>
+              <span class="res-col-obs mono" id="obs-oil-p">--</span>
+              <span class="res-col-diff mono" id="diff-oil-p">0.00 bar</span>
+            </div>
+
+            <div class="res-table-row" id="row-oil-temp">
+              <span class="res-col-channel">Oil Temperature</span>
+              <span class="res-col-exp mono" id="exp-oil-t">--</span>
+              <span class="res-col-obs mono" id="obs-oil-t">--</span>
+              <span class="res-col-diff mono" id="diff-oil-t">0.0 &deg;C</span>
+            </div>
+
+            <div class="res-table-row" id="row-coolant">
+              <span class="res-col-channel">Coolant Temperature</span>
+              <span class="res-col-exp mono" id="exp-coolant">--</span>
+              <span class="res-col-obs mono" id="obs-coolant">--</span>
+              <span class="res-col-diff mono" id="diff-coolant">0.0 &deg;C</span>
+            </div>
+
+            <div class="res-table-row" id="row-cht-3">
+              <span class="res-col-channel">Cylinder 3 CHT</span>
+              <span class="res-col-exp mono" id="exp-cht-3">--</span>
+              <span class="res-col-obs mono" id="obs-cht-3">--</span>
+              <span class="res-col-diff mono" id="diff-cht-3">0.0 &deg;C</span>
+            </div>
+
+            <div class="res-table-row" id="row-egt-3">
+              <span class="res-col-channel">Cylinder 3 EGT</span>
+              <span class="res-col-exp mono" id="exp-egt-3">--</span>
+              <span class="res-col-obs mono" id="obs-egt-3">--</span>
+              <span class="res-col-diff mono" id="diff-egt-3">0.0 &deg;C</span>
+            </div>
+
+            <div class="res-table-row" id="row-vibration">
+              <span class="res-col-channel">RMS Vibration</span>
+              <span class="res-col-exp mono" id="exp-vib">--</span>
+              <span class="res-col-obs mono" id="obs-vib">--</span>
+              <span class="res-col-diff mono" id="diff-vib">0.00 mm/s</span>
+            </div>
+          </div>
+
+          <!-- EKF Degradation & Residual Distance Banner -->
+          <div class="dt-bottom-strip">
+            <div class="dres-card-box">
+              <div class="dres-top-label">
+                <span class="dres-name">Residual Distance (D_res)</span>
+                <span class="dres-number mono" id="dt-dres">1.45</span>
               </div>
               <div class="progress-track">
-                <div class="progress-fill-yellow" id="meter-rpm" style="width: 0%;"></div>
+                <div class="progress-fill-yellow" id="bar-dres" style="width: 20%;"></div>
               </div>
-              <div class="gauge-sub-row">
-                <span>Shaft Power: <strong class="mono" id="disp-power">0.0 kW</strong></span>
-                <span>MAP: <strong class="mono" id="disp-map">0.0 kPa</strong></span>
+              <div class="dres-scale-legend mono">
+                <span>0.0 (Nominal)</span>
+                <span>2.5 (Anomaly Limit)</span>
+                <span>6.0+ (Critical)</span>
               </div>
             </div>
 
-            <!-- Mini Supporting Telemetry Rows -->
-            <div class="mini-telemetry-list">
-              <!-- Oil Pressure -->
-              <div class="telemetry-row-item" id="card-oil-press">
-                <div class="tel-label-group">
-                  <span class="tel-label">Oil Pressure</span>
+            <div class="ekf-deg-box">
+              <span class="ekf-strip-title">EKF Physical Degradation States</span>
+              <div class="ekf-items-row">
+                <div class="ekf-item">
+                  <div class="ekf-item-header">
+                    <span class="ekf-sym">&eta;_vol</span>
+                    <span class="ekf-val mono" id="dt-eta-vol">88.0%</span>
+                  </div>
+                  <div class="progress-track"><div class="progress-fill-yellow" id="bar-eta-vol" style="width: 100%;"></div></div>
                 </div>
-                <div class="tel-val-group">
-                  <span class="tel-val mono" id="disp-oil-p">0.00</span>
-                  <span class="tel-unit">bar</span>
+                <div class="ekf-item">
+                  <div class="ekf-item-header">
+                    <span class="ekf-sym">&eta;_mech</span>
+                    <span class="ekf-val mono" id="dt-eta-mech">90.0%</span>
+                  </div>
+                  <div class="progress-track"><div class="progress-fill-green" id="bar-eta-mech" style="width: 100%;"></div></div>
                 </div>
-                <div class="progress-track" style="width: 50px;">
-                  <div class="progress-fill-green" id="meter-oil-p" style="width: 60%;"></div>
-                </div>
-              </div>
-
-              <!-- Oil Temperature -->
-              <div class="telemetry-row-item" id="card-oil-temp">
-                <div class="tel-label-group">
-                  <span class="tel-label">Oil Temperature</span>
-                </div>
-                <div class="tel-val-group">
-                  <span class="tel-val mono" id="disp-oil-t">0.0</span>
-                  <span class="tel-unit">&deg;C</span>
-                </div>
-                <div class="progress-track" style="width: 50px;">
-                  <div class="progress-fill-yellow" id="meter-oil-t" style="width: 65%;"></div>
-                </div>
-              </div>
-
-              <!-- Coolant Temperature -->
-              <div class="telemetry-row-item" id="card-coolant">
-                <div class="tel-label-group">
-                  <span class="tel-label">Coolant Temp</span>
-                </div>
-                <div class="tel-val-group">
-                  <span class="tel-val mono" id="disp-coolant">0.0</span>
-                  <span class="tel-unit">&deg;C</span>
-                </div>
-                <div class="progress-track" style="width: 50px;">
-                  <div class="progress-fill-yellow" id="meter-coolant" style="width: 70%;"></div>
-                </div>
-              </div>
-
-              <!-- Vibration RMS -->
-              <div class="telemetry-row-item" id="card-vibration">
-                <div class="tel-label-group">
-                  <span class="tel-label">Vibration RMS</span>
-                </div>
-                <div class="tel-val-group">
-                  <span class="tel-val mono" id="disp-vib">0.00</span>
-                  <span class="tel-unit">mm/s</span>
-                </div>
-                <div class="progress-track" style="width: 50px;">
-                  <div class="progress-fill-yellow" id="meter-vib" style="width: 25%;"></div>
+                <div class="ekf-item">
+                  <div class="ekf-item-header">
+                    <span class="ekf-sym">&eta;_comb</span>
+                    <span class="ekf-val mono" id="dt-eta-comb">96.0%</span>
+                  </div>
+                  <div class="progress-track"><div class="progress-fill-yellow" id="bar-eta-comb" style="width: 100%;"></div></div>
                 </div>
               </div>
             </div>
           </div>
-
-          <!-- Right: Live Canvas Chart -->
-          <div class="chart-canvas-wrap">
-            <div class="chart-legend-top mono">
-              <div class="legend-item">
-                <span class="legend-dot dot-chart-yellow"></span>
-                <span>Speed (RPM)</span>
-              </div>
-              <div class="legend-item">
-                <span class="legend-dot dot-chart-yellow-subtle"></span>
-                <span>MAP (kPa)</span>
-              </div>
-            </div>
-            <canvas id="chart-rpm-map" height="170"></canvas>
-          </div>
         </div>
-      </div>
+      </section>
+    </div>
 
-      <!-- Right Feature Card: Operational Status (SIH Visual Theme) -->
-      <aside class="card-feature-blue" aria-label="Tactical Mission Risk Assessment">
-        <div class="feature-top-row">
-          <div class="feature-heading-group">
-            <span class="feature-subhead">Operational Status</span>
-            <h2 class="feature-main-title" id="feature-card-risk-title">MISSION GO</h2>
-          </div>
-          <button type="button" class="btn-feature-round" title="Mission Details" aria-label="Mission Details">
-            <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-          </button>
-        </div>
-
-        <p class="feature-desc">
-          Current engine operating conditions, lubrication pressures, and cylinder thermal margins remain strictly within nominal flight envelopes.
-        </p>
-
-        <!-- Layered Information Cards Inside Blue Feature Card -->
-        <div class="feature-layered-cards">
-          <div class="feature-inner-card">
-            <div class="inner-meta-group">
-              <div class="inner-meta-label">Composite Health</div>
-              <div class="inner-sub-ci">&bull; EKF State Normal</div>
+    <!-- =====================================================================
+         PAGE 3: MISSION (Cylinder Thermals, Trend History, Closed-Loop Tracking)
+         ===================================================================== -->
+    <div class="page-view is-hidden" id="view-mission">
+      <!-- TOP: 4-CYLINDER THERMAL STATUS & SPREAD -->
+      <section class="mission-thermal-grid" aria-label="Cylinder Thermals and Balance">
+        <!-- 4-Cylinder Thermal Matrix Card -->
+        <div class="card-thermal">
+          <div class="card-header-split">
+            <div class="card-title-group">
+              <h2 class="card-title">Cylinder Thermal Status</h2>
+              <span class="card-subtext">4-Cylinder Horizontally Opposed (Rotax 914 F Boxer)</span>
             </div>
-            <div class="inner-meta-val mono" id="feature-card-health">98.5%</div>
-          </div>
-
-          <div class="feature-inner-card">
-            <div class="inner-meta-group">
-              <div class="inner-meta-label">Remaining Useful Life</div>
-              <div class="inner-sub-ci">Overhaul Interval Target</div>
-            </div>
-            <div class="inner-meta-val mono" id="feature-card-rul">1,857 h</div>
-          </div>
-
-          <div class="feature-inner-card">
-            <div class="inner-meta-group">
-              <div class="inner-meta-label">Anomaly Confidence</div>
-              <div class="inner-sub-ci">Attribution Model</div>
-            </div>
-            <div class="inner-meta-val mono" id="disp-confidence" style="font-size: 13.5px;">95.0% (Nominal)</div>
-          </div>
-        </div>
-      </aside>
-    </section>
-
-    <!-- ================= 4. MIDDLE ROW: CYLINDER THERMAL + DIGITAL TWIN RESIDUALS ================= -->
-    <section class="middle-row-grid" aria-label="Cylinder Thermals and Digital Twin Residuals">
-      <!-- 4-Cylinder Thermal Matrix Card -->
-      <div class="card-thermal">
-        <div class="card-header-split">
-          <div class="card-title-group">
-            <h2 class="card-title">Cylinder Thermal Status</h2>
-            <span class="card-subtext">4-Cylinder Horizontally Opposed (Rotax 914 F Boxer)</span>
-          </div>
-          <div class="chart-legend-top mono" style="margin: 0;">
-            <div class="legend-item"><span class="legend-dot dot-chart-yellow"></span> CHT</div>
-            <div class="legend-item"><span class="legend-dot dot-chart-yellow-subtle"></span> EGT</div>
-          </div>
-        </div>
-
-        <div class="cylinder-matrix-grid">
-          <!-- Cyl 1 -->
-          <div class="cyl-col-card" id="dash-cyl-1">
-            <span class="cyl-badge">CYL 1</span>
-            <div class="cyl-readout-stack">
-              <div class="cyl-param-block">
-                <span class="cyl-param-label label-cht">CHT</span>
-                <span class="cyl-param-val mono" id="disp-cht-1">-- &deg;C</span>
-              </div>
-              <div class="cyl-param-block">
-                <span class="cyl-param-label label-egt">EGT</span>
-                <span class="cyl-param-val val-egt mono" id="disp-egt-1">-- &deg;C</span>
-              </div>
+            <div class="chart-legend-top mono" style="margin: 0;">
+              <div class="legend-item"><span class="legend-dot dot-chart-yellow"></span> CHT</div>
+              <div class="legend-item"><span class="legend-dot dot-chart-yellow-subtle"></span> EGT</div>
             </div>
           </div>
 
-          <!-- Cyl 2 -->
-          <div class="cyl-col-card" id="dash-cyl-2">
-            <span class="cyl-badge">CYL 2</span>
-            <div class="cyl-readout-stack">
-              <div class="cyl-param-block">
-                <span class="cyl-param-label label-cht">CHT</span>
-                <span class="cyl-param-val mono" id="disp-cht-2">-- &deg;C</span>
-              </div>
-              <div class="cyl-param-block">
-                <span class="cyl-param-label label-egt">EGT</span>
-                <span class="cyl-param-val val-egt mono" id="disp-egt-2">-- &deg;C</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Cyl 3 -->
-          <div class="cyl-col-card" id="dash-cyl-3">
-            <span class="cyl-badge">CYL 3</span>
-            <div class="cyl-readout-stack">
-              <div class="cyl-param-block">
-                <span class="cyl-param-label label-cht">CHT</span>
-                <span class="cyl-param-val mono" id="disp-cht-3">-- &deg;C</span>
-              </div>
-              <div class="cyl-param-block">
-                <span class="cyl-param-label label-egt">EGT</span>
-                <span class="cyl-param-val val-egt mono" id="disp-egt-3">-- &deg;C</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Cyl 4 -->
-          <div class="cyl-col-card" id="dash-cyl-4">
-            <span class="cyl-badge">CYL 4</span>
-            <div class="cyl-readout-stack">
-              <div class="cyl-param-block">
-                <span class="cyl-param-label label-cht">CHT</span>
-                <span class="cyl-param-val mono" id="disp-cht-4">-- &deg;C</span>
-              </div>
-              <div class="cyl-param-block">
-                <span class="cyl-param-label label-egt">EGT</span>
-                <span class="cyl-param-val val-egt mono" id="disp-egt-4">-- &deg;C</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Cylinder Thermal Balance & Spread Visualization -->
-        <div class="cyl-balance-section">
-          <div class="cyl-spread-header">
-            <div class="spread-stats-group">
-              <span class="spread-title">Thermal Balance &amp; Spread</span>
-              <span class="spread-readout mono">&Delta;CHT: <strong id="disp-spread-cht">0.0 &deg;C</strong> &bull; &Delta;EGT: <strong id="disp-spread-egt">0 &deg;C</strong></span>
-            </div>
-            <span class="status-chip chip-balanced" id="badge-cyl-balance">BALANCED</span>
-          </div>
-
-          <!-- Live Horizontal Comparison Bars (Both CHT & EGT using #FDE68A Light Yellow) -->
-          <div class="cyl-bars-table">
-            <div class="cyl-bar-row">
-              <span class="cyl-bar-label mono">CYL 1</span>
-              <div class="cyl-bar-track-wrap">
-                <div class="cyl-bar-fill fill-cht" id="bar-cht-1" style="width: 75%;"></div>
-                <div class="cyl-bar-fill fill-egt" id="bar-egt-1" style="width: 78%;"></div>
-              </div>
-              <span class="cyl-bar-num mono" id="num-bar-1">--&deg; / --&deg;</span>
-            </div>
-            <div class="cyl-bar-row">
-              <span class="cyl-bar-label mono">CYL 2</span>
-              <div class="cyl-bar-track-wrap">
-                <div class="cyl-bar-fill fill-cht" id="bar-cht-2" style="width: 74%;"></div>
-                <div class="cyl-bar-fill fill-egt" id="bar-egt-2" style="width: 77%;"></div>
-              </div>
-              <span class="cyl-bar-num mono" id="num-bar-2">--&deg; / --&deg;</span>
-            </div>
-            <div class="cyl-bar-row">
-              <span class="cyl-bar-label mono">CYL 3</span>
-              <div class="cyl-bar-track-wrap">
-                <div class="cyl-bar-fill fill-cht" id="bar-cht-3" style="width: 78%;"></div>
-                <div class="cyl-bar-fill fill-egt" id="bar-egt-3" style="width: 82%;"></div>
-              </div>
-              <span class="cyl-bar-num mono" id="num-bar-3">--&deg; / --&deg;</span>
-            </div>
-            <div class="cyl-bar-row">
-              <span class="cyl-bar-label mono">CYL 4</span>
-              <div class="cyl-bar-track-wrap">
-                <div class="cyl-bar-fill fill-cht" id="bar-cht-4" style="width: 75%;"></div>
-                <div class="cyl-bar-fill fill-egt" id="bar-egt-4" style="width: 78%;"></div>
-              </div>
-              <span class="cyl-bar-num mono" id="num-bar-4">--&deg; / --&deg;</span>
-            </div>
-          </div>
-
-          <!-- 4-Cylinder Rolling Trend Canvas -->
-          <div class="cyl-trend-canvas-wrap">
-            <div class="cyl-trend-header mono">
-              <span>4-CYLINDER CHT TREND</span>
-              <div class="trend-legend">
-                <span class="trend-key key-c1">C1</span>
-                <span class="trend-key key-c2">C2</span>
-                <span class="trend-key key-c3">C3</span>
-                <span class="trend-key key-c4">C4</span>
-              </div>
-            </div>
-            <canvas id="chart-cyl-trend" height="60"></canvas>
-          </div>
-        </div>
-      </div>
-
-      <!-- Digital Twin Residuals Card -->
-      <div class="card-residuals">
-        <div class="card-header-split">
-          <div class="card-title-group">
-            <h2 class="card-title">Digital Twin Residuals</h2>
-            <span class="card-subtext">Physics-informed closed-loop EKF observer vs aircraft telemetry</span>
-          </div>
-          <span class="status-chip mono" style="font-size: 11px;">
-            <span class="chip-dot dot-yellow"></span>
-            CLOSED-LOOP EKF
-          </span>
-        </div>
-
-        <!-- Residual Comparison Table -->
-        <div class="res-table-wrap">
-          <div class="res-table-head">
-            <span>CHANNEL</span>
-            <span class="align-right">EXPECTED</span>
-            <span class="align-right">OBSERVED</span>
-            <span class="align-right">RESIDUAL (&Delta;)</span>
-          </div>
-
-          <div class="res-table-row">
-            <span class="res-col-channel">Engine Speed</span>
-            <span class="res-col-exp mono" id="exp-rpm">--</span>
-            <span class="res-col-obs mono" id="obs-rpm">--</span>
-            <span class="res-col-diff mono" id="diff-rpm">0 RPM</span>
-          </div>
-
-          <div class="res-table-row">
-            <span class="res-col-channel">Manifold Pressure</span>
-            <span class="res-col-exp mono" id="exp-map">--</span>
-            <span class="res-col-obs mono" id="obs-map">--</span>
-            <span class="res-col-diff mono" id="diff-map">0.0 kPa</span>
-          </div>
-
-          <div class="res-table-row" id="row-oil-press">
-            <span class="res-col-channel">Oil Pressure</span>
-            <span class="res-col-exp mono" id="exp-oil-p">--</span>
-            <span class="res-col-obs mono" id="obs-oil-p">--</span>
-            <span class="res-col-diff mono" id="diff-oil-p">0.00 bar</span>
-          </div>
-
-          <div class="res-table-row" id="row-oil-temp">
-            <span class="res-col-channel">Oil Temperature</span>
-            <span class="res-col-exp mono" id="exp-oil-t">--</span>
-            <span class="res-col-obs mono" id="obs-oil-t">--</span>
-            <span class="res-col-diff mono" id="diff-oil-t">0.0 &deg;C</span>
-          </div>
-
-          <div class="res-table-row" id="row-coolant">
-            <span class="res-col-channel">Coolant Temperature</span>
-            <span class="res-col-exp mono" id="exp-coolant">--</span>
-            <span class="res-col-obs mono" id="obs-coolant">--</span>
-            <span class="res-col-diff mono" id="diff-coolant">0.0 &deg;C</span>
-          </div>
-
-          <div class="res-table-row" id="row-cht-3">
-            <span class="res-col-channel">Cylinder 3 CHT</span>
-            <span class="res-col-exp mono" id="exp-cht-3">--</span>
-            <span class="res-col-obs mono" id="obs-cht-3">--</span>
-            <span class="res-col-diff mono" id="diff-cht-3">0.0 &deg;C</span>
-          </div>
-
-          <div class="res-table-row" id="row-egt-3">
-            <span class="res-col-channel">Cylinder 3 EGT</span>
-            <span class="res-col-exp mono" id="exp-egt-3">--</span>
-            <span class="res-col-obs mono" id="obs-egt-3">--</span>
-            <span class="res-col-diff mono" id="diff-egt-3">0.0 &deg;C</span>
-          </div>
-
-          <div class="res-table-row" id="row-vibration">
-            <span class="res-col-channel">RMS Vibration</span>
-            <span class="res-col-exp mono" id="exp-vib">--</span>
-            <span class="res-col-obs mono" id="obs-vib">--</span>
-            <span class="res-col-diff mono" id="diff-vib">0.00 mm/s</span>
-          </div>
-        </div>
-
-        <!-- EKF Degradation & Residual Distance Banner -->
-        <div class="dt-bottom-strip">
-          <div class="dres-card-box">
-            <div class="dres-top-label">
-              <span class="dres-name">Residual Distance (D_res)</span>
-              <span class="dres-number mono" id="dt-dres">1.45</span>
-            </div>
-            <div class="progress-track">
-              <div class="progress-fill-yellow" id="bar-dres" style="width: 20%;"></div>
-            </div>
-            <div class="dres-scale-legend mono">
-              <span>0.0 (Nominal)</span>
-              <span>2.5 (Anomaly Limit)</span>
-              <span>6.0+ (Critical)</span>
-            </div>
-          </div>
-
-          <div class="ekf-deg-box">
-            <span class="ekf-strip-title">EKF Physical Degradation States</span>
-            <div class="ekf-items-row">
-              <div class="ekf-item">
-                <div class="ekf-item-header">
-                  <span class="ekf-sym">&eta;_vol</span>
-                  <span class="ekf-val mono" id="dt-eta-vol">88.0%</span>
+          <div class="cylinder-matrix-grid">
+            <!-- Cyl 1 -->
+            <div class="cyl-col-card" id="dash-cyl-1">
+              <span class="cyl-badge">CYL 1</span>
+              <div class="cyl-readout-stack">
+                <div class="cyl-param-block">
+                  <span class="cyl-param-label label-cht">CHT</span>
+                  <span class="cyl-param-val mono" id="disp-cht-1">-- &deg;C</span>
                 </div>
-                <div class="progress-track"><div class="progress-fill-yellow" id="bar-eta-vol" style="width: 100%;"></div></div>
-              </div>
-              <div class="ekf-item">
-                <div class="ekf-item-header">
-                  <span class="ekf-sym">&eta;_mech</span>
-                  <span class="ekf-val mono" id="dt-eta-mech">90.0%</span>
+                <div class="cyl-param-block">
+                  <span class="cyl-param-label label-egt">EGT</span>
+                  <span class="cyl-param-val val-egt mono" id="disp-egt-1">-- &deg;C</span>
                 </div>
-                <div class="progress-track"><div class="progress-fill-green" id="bar-eta-mech" style="width: 100%;"></div></div>
               </div>
-              <div class="ekf-item">
-                <div class="ekf-item-header">
-                  <span class="ekf-sym">&eta;_comb</span>
-                  <span class="ekf-val mono" id="dt-eta-comb">96.0%</span>
+            </div>
+
+            <!-- Cyl 2 -->
+            <div class="cyl-col-card" id="dash-cyl-2">
+              <span class="cyl-badge">CYL 2</span>
+              <div class="cyl-readout-stack">
+                <div class="cyl-param-block">
+                  <span class="cyl-param-label label-cht">CHT</span>
+                  <span class="cyl-param-val mono" id="disp-cht-2">-- &deg;C</span>
                 </div>
-                <div class="progress-track"><div class="progress-fill-yellow" id="bar-eta-comb" style="width: 100%;"></div></div>
+                <div class="cyl-param-block">
+                  <span class="cyl-param-label label-egt">EGT</span>
+                  <span class="cyl-param-val val-egt mono" id="disp-egt-2">-- &deg;C</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Cyl 3 -->
+            <div class="cyl-col-card" id="dash-cyl-3">
+              <span class="cyl-badge">CYL 3</span>
+              <div class="cyl-readout-stack">
+                <div class="cyl-param-block">
+                  <span class="cyl-param-label label-cht">CHT</span>
+                  <span class="cyl-param-val mono" id="disp-cht-3">-- &deg;C</span>
+                </div>
+                <div class="cyl-param-block">
+                  <span class="cyl-param-label label-egt">EGT</span>
+                  <span class="cyl-param-val val-egt mono" id="disp-egt-3">-- &deg;C</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Cyl 4 -->
+            <div class="cyl-col-card" id="dash-cyl-4">
+              <span class="cyl-badge">CYL 4</span>
+              <div class="cyl-readout-stack">
+                <div class="cyl-param-block">
+                  <span class="cyl-param-label label-cht">CHT</span>
+                  <span class="cyl-param-val mono" id="disp-cht-4">-- &deg;C</span>
+                </div>
+                <div class="cyl-param-block">
+                  <span class="cyl-param-label label-egt">EGT</span>
+                  <span class="cyl-param-val val-egt mono" id="disp-egt-4">-- &deg;C</span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
-    </section>
 
-    <!-- ================= 5. LOWER ROW: DIAGNOSTICS + STATISTICS + MISSION ADVISORY ================= -->
-    <section class="lower-trio-grid" aria-label="Diagnostics, Health Distribution and Mission Advisory">
-      <!-- Active Diagnostics Card (Incident-Card Style) -->
-      <div class="card-diagnostics">
-        <div class="card-header-split">
-          <div class="card-title-group">
-            <h2 class="card-title">Active Diagnostics</h2>
-            <span class="card-subtext">Physics-guided multi-variable fault attribution</span>
-          </div>
-          <span class="incident-badge" id="diag-status-badge">NOMINAL</span>
-        </div>
+          <!-- Cylinder Thermal Balance & Spread Visualization -->
+          <div class="cyl-balance-section">
+            <div class="cyl-spread-header">
+              <div class="spread-stats-group">
+                <span class="spread-title">Thermal Balance &amp; Spread</span>
+                <span class="spread-readout mono">&Delta;CHT: <strong id="disp-spread-cht">0.0 &deg;C</strong> &bull; &Delta;EGT: <strong id="disp-spread-egt">0 &deg;C</strong></span>
+              </div>
+              <span class="status-chip chip-balanced" id="badge-cyl-balance">BALANCED</span>
+            </div>
 
-        <div class="incident-card-item" id="incident-container">
-          <div class="incident-header-row">
-            <span class="status-chip mono" id="adv-diag-code">FC-00: NORMAL OPERATION</span>
-            <span class="incident-time-code mono">10 Hz EKF Loop</span>
-          </div>
-          <div class="incident-title" id="diag-fault-name">Engine Operating Nominally</div>
-          <div class="incident-subsystem" id="diag-subsystem">Affected Subsystem: None (Healthy)</div>
-          <p class="incident-desc" id="adv-root-cause">
-            All cylinder temperatures, pressures, and vibration signatures match Digital Twin expected baseline.
-          </p>
-        </div>
-      </div>
+            <!-- Live Horizontal Comparison Bars -->
+            <div class="cyl-bars-table">
+              <div class="cyl-bar-row">
+                <span class="cyl-bar-label mono">CYL 1</span>
+                <div class="cyl-bar-track-wrap">
+                  <div class="cyl-bar-fill fill-cht" id="bar-cht-1" style="width: 75%;"></div>
+                  <div class="cyl-bar-fill fill-egt" id="bar-egt-1" style="width: 78%;"></div>
+                </div>
+                <span class="cyl-bar-num mono" id="num-bar-1">--&deg; / --&deg;</span>
+              </div>
+              <div class="cyl-bar-row">
+                <span class="cyl-bar-label mono">CYL 2</span>
+                <div class="cyl-bar-track-wrap">
+                  <div class="cyl-bar-fill fill-cht" id="bar-cht-2" style="width: 74%;"></div>
+                  <div class="cyl-bar-fill fill-egt" id="bar-egt-2" style="width: 77%;"></div>
+                </div>
+                <span class="cyl-bar-num mono" id="num-bar-2">--&deg; / --&deg;</span>
+              </div>
+              <div class="cyl-bar-row">
+                <span class="cyl-bar-label mono">CYL 3</span>
+                <div class="cyl-bar-track-wrap">
+                  <div class="cyl-bar-fill fill-cht" id="bar-cht-3" style="width: 78%;"></div>
+                  <div class="cyl-bar-fill fill-egt" id="bar-egt-3" style="width: 82%;"></div>
+                </div>
+                <span class="cyl-bar-num mono" id="num-bar-3">--&deg; / --&deg;</span>
+              </div>
+              <div class="cyl-bar-row">
+                <span class="cyl-bar-label mono">CYL 4</span>
+                <div class="cyl-bar-track-wrap">
+                  <div class="cyl-bar-fill fill-cht" id="bar-cht-4" style="width: 75%;"></div>
+                  <div class="cyl-bar-fill fill-egt" id="bar-egt-4" style="width: 78%;"></div>
+                </div>
+                <span class="cyl-bar-num mono" id="num-bar-4">--&deg; / --&deg;</span>
+              </div>
+            </div>
 
-      <!-- Center Statistics / Circular Health Cockpit Card -->
-      <div class="card-statistics">
-        <div class="card-title-group" style="width: 100%; text-align: left;">
-          <h2 class="card-title">Health Cockpit</h2>
-          <span class="card-subtext">Composite reliability index</span>
-        </div>
-
-        <div class="health-radial-wrap">
-          <svg class="health-svg" viewBox="0 0 160 160" aria-label="Engine Health Percentage Gauge">
-            <circle class="circle-track" cx="80" cy="80" r="70"></circle>
-            <circle class="circle-fill-meter" id="svg-health-meter" cx="80" cy="80" r="70"></circle>
-          </svg>
-          <div class="radial-center-text">
-            <span class="radial-big-val mono" id="disp-health-num-cockpit">98</span>
-            <span class="radial-unit">HEALTH</span>
-          </div>
-        </div>
-
-        <div class="stat-metric-pills">
-          <div class="stat-pill-row">
-            <span class="stat-pill-label">Mission Risk:</span>
-            <span class="stat-pill-val mono highlight-green" id="stat-risk-val">LOW RISK (GO)</span>
-          </div>
-          <div class="stat-pill-row">
-            <span class="stat-pill-label">Residual Norm (D_res):</span>
-            <span class="stat-pill-val mono highlight-yellow" id="stat-dres-val">1.45</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Right Mission Advisory Card (Assistant Style Following Reference) -->
-      <div class="card-advisory" id="card-advisory">
-        <div class="card-header-split">
-          <div class="card-title-group">
-            <h2 class="card-title">Mission Advisory</h2>
-            <span class="card-subtext" id="adv-title">POWERTRAIN OPERATING NOMINALLY</span>
-          </div>
-          <span class="status-chip mono" id="adv-badge-urgency">NORMAL</span>
-        </div>
-
-        <!-- Advisory Category Pills -->
-        <div class="advisory-category-chips">
-          <button type="button" class="adv-chip active">Pilot Directives</button>
-          <button type="button" class="adv-chip">Maintenance Work Order</button>
-          <button type="button" class="adv-chip">Tactical Recommendations</button>
-        </div>
-
-        <!-- Pilot Directives Box -->
-        <div class="advisory-directive-box">
-          <div class="adv-box-header">
-            <svg viewBox="0 0 24 24"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
-            <span>TACTICAL PILOT DIRECTIVES</span>
-          </div>
-          <ul class="adv-actions-list" id="adv-pilot-list">
-            <li>Powertrain operating within nominal green band.</li>
-            <li>Full mission flight envelope approved (Takeoff, Climb, Cruise, Loiter).</li>
-          </ul>
-        </div>
-
-        <!-- Maintenance Crew Directives Box -->
-        <div class="advisory-directive-box">
-          <div class="adv-box-header">
-            <svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
-            <span>MAINTENANCE CREW WORK ORDER</span>
-          </div>
-          <ul class="adv-actions-list muted-list" id="adv-maint-list">
-            <li>Routine post-flight pre-flight inspection at next 25-hour service interval.</li>
-          </ul>
-        </div>
-
-        <!-- Bottom Assistant Input / Status Strip -->
-        <div class="advisory-bottom-input">
-          <span>10 Hz closed-loop advisory stream active</span>
-          <span class="mono">&bull; EKF SYNC</span>
-        </div>
-      </div>
-    </section>
-
-    <!-- ================= 6. BOTTOM TELEMETRY HISTORY CHARTS ================= -->
-    <section class="bottom-charts-row" aria-label="Real-time Telemetry History Traces">
-      <!-- Chart 1: Cylinder 3 Thermal Profile (CHT & EGT) -->
-      <div class="chart-card-box">
-        <div class="chart-card-header">
-          <span class="chart-card-title">Cylinder 3 Thermal Profile (CHT &amp; EGT)</span>
-          <div class="chart-legend-top mono" style="margin:0;">
-            <div class="legend-item"><span class="legend-dot dot-chart-yellow"></span> CHT (&deg;C)</div>
-            <div class="legend-item"><span class="legend-dot dot-chart-yellow-subtle"></span> EGT (&deg;C)</div>
+            <!-- 4-Cylinder Rolling Trend Canvas -->
+            <div class="cyl-trend-canvas-wrap">
+              <div class="cyl-trend-header mono">
+                <span>4-CYLINDER CHT TREND</span>
+                <div class="trend-legend">
+                  <span class="trend-key key-c1">C1</span>
+                  <span class="trend-key key-c2">C2</span>
+                  <span class="trend-key key-c3">C3</span>
+                  <span class="trend-key key-c4">C4</span>
+                </div>
+              </div>
+              <canvas id="chart-cyl-trend" height="60"></canvas>
+            </div>
           </div>
         </div>
-        <div class="chart-mini-canvas-wrap">
-          <canvas id="chart-temps" height="95"></canvas>
-        </div>
-      </div>
+      </section>
 
-      <!-- Chart 2: Digital Twin Residual Distance (D_res) -->
-      <div class="chart-card-box">
-        <div class="chart-card-header">
-          <span class="chart-card-title">Residual Divergence (D_res)</span>
-          <div class="chart-legend-top mono" style="margin:0;">
-            <div class="legend-item"><span class="legend-dot dot-chart-green"></span> D_res &lt; 2.5</div>
-            <div class="legend-item"><span class="legend-dot dot-chart-red"></span> Limit (2.5)</div>
+      <!-- BOTTOM: TELEMETRY HISTORY CHARTS -->
+      <section class="bottom-charts-row" aria-label="Real-time Telemetry History Traces">
+        <!-- Chart 1: Cylinder 3 Thermal Profile (CHT & EGT) -->
+        <div class="chart-card-box">
+          <div class="chart-card-header">
+            <span class="chart-card-title">Cylinder 3 Thermal Profile (CHT &amp; EGT)</span>
+            <div class="chart-legend-top mono" style="margin:0;">
+              <div class="legend-item"><span class="legend-dot dot-chart-yellow"></span> CHT (&deg;C)</div>
+              <div class="legend-item"><span class="legend-dot dot-chart-yellow-subtle"></span> EGT (&deg;C)</div>
+            </div>
+          </div>
+          <div class="chart-mini-canvas-wrap">
+            <canvas id="chart-temps" height="95"></canvas>
           </div>
         </div>
-        <div class="chart-mini-canvas-wrap">
-          <canvas id="chart-residuals" height="95"></canvas>
-        </div>
-      </div>
 
-      <!-- Chart 3: Historical Telemetry Overview -->
-      <div class="chart-card-box">
-        <div class="chart-card-header">
-          <span class="chart-card-title">Digital Twin Closed-Loop Tracking</span>
-          <span class="chart-card-sub mono">RESIDUAL CONFIDENCE 95%</span>
-        </div>
-        <div class="chart-mini-canvas-wrap" style="display: flex; align-items: center; justify-content: center;">
-          <div style="text-align: center; color: var(--text-muted); font-size: 11.5px; line-height: 1.6;">
-            Continuous Kalman state correction enabled.<br>
-            <strong style="color: var(--status-nominal);">&bull; ZERO DIVERGENCE DETECTED</strong>
+        <!-- Chart 2: Digital Twin Residual Distance (D_res) -->
+        <div class="chart-card-box">
+          <div class="chart-card-header">
+            <span class="chart-card-title">Residual Divergence (D_res)</span>
+            <div class="chart-legend-top mono" style="margin:0;">
+              <div class="legend-item"><span class="legend-dot dot-chart-green"></span> D_res &lt; 2.5</div>
+              <div class="legend-item"><span class="legend-dot dot-chart-red"></span> Limit (2.5)</div>
+            </div>
+          </div>
+          <div class="chart-mini-canvas-wrap">
+            <canvas id="chart-residuals" height="95"></canvas>
           </div>
         </div>
-      </div>
-    </section>
+
+        <!-- Chart 3: Historical Telemetry Overview -->
+        <div class="chart-card-box">
+          <div class="chart-card-header">
+            <span class="chart-card-title">Digital Twin Closed-Loop Tracking</span>
+            <span class="chart-card-sub mono">RESIDUAL CONFIDENCE 95%</span>
+          </div>
+          <div class="chart-mini-canvas-wrap" style="display: flex; align-items: center; justify-content: center;">
+            <div style="text-align: center; color: var(--text-muted); font-size: 11.5px; line-height: 1.6;">
+              Continuous Kalman state correction enabled.<br>
+              <strong style="color: var(--status-nominal);">&bull; ZERO DIVERGENCE DETECTED</strong>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
 
   </div>
 

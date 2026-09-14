@@ -40,7 +40,7 @@ def run_server(host: str, port: int):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="SIH26054 — Engine & Mission Telemetry Simulator")
+    parser = argparse.ArgumentParser(description="TRINETRA-AERO — Engine & Mission Telemetry Simulator")
     parser.add_argument("--host", type=str, default=DEFAULT_WS_HOST, help="Server bind host")
     parser.add_argument("--port", type=int, default=DEFAULT_WS_PORT, help="Server bind port")
     parser.add_argument("--headless", action="store_true", help="Run in headless server mode (no GUI window)")
@@ -48,7 +48,7 @@ def main():
     args = parser.parse_args()
 
     print("==================================================================")
-    print("  SIH26054 — ENGINE & MISSION TELEMETRY SIMULATOR (SIMULATOR.EXE)")
+    print("  TRINETRA-AERO — ENGINE & MISSION TELEMETRY SIMULATOR")
     print(f"  Broadcasting at 10 Hz on ws://{args.host}:{args.port}/telemetry")
     print(f"  Operator Console: http://{args.host}:{args.port}")
     print("==================================================================")
@@ -85,7 +85,7 @@ def main():
         try:
             print("[Simulator] Opening native desktop operator console...")
             window = webview.create_window(
-                title="SIH26054 — ENGINE & MISSION TELEMETRY SIMULATOR",
+                title="TRINETRA-AERO — ENGINE & MISSION TELEMETRY SIMULATOR",
                 url=url,
                 width=1180,
                 height=840,

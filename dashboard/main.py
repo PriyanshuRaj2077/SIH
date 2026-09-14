@@ -265,7 +265,7 @@ def main():
         try:
             print("[Dashboard] Opening native desktop mission control console...")
             window = webview.create_window(
-                title="SIH26054 — DIGITAL TWIN",
+                title="TRINETRA-AERO — DIGITAL TWIN",
                 url=url,
                 width=1320,
                 height=880,

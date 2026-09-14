@@ -763,33 +763,53 @@
     if (hdrMissionClock) hdrMissionClock.textContent = `${hrs}:${mins}:${secs}`;
   }, 1000);
 
-  // Navigation Pill Interactivity
+  // Navigation Pill Interactivity (3-Page Dedicated View Routing)
   function setupNavigation() {
     const navPills = document.querySelectorAll('.nav-pill');
+    const pageViews = document.querySelectorAll('.page-view');
+
+    function switchPage(target) {
+      if (!target) return;
+
+      // Update active nav pill state
+      navPills.forEach(p => {
+        if (p.getAttribute('data-nav') === target) {
+          p.classList.add('active');
+        } else {
+          p.classList.remove('active');
+        }
+      });
+
+      // Show target view, hide others
+      pageViews.forEach(view => {
+        if (view.id === `view-${target}`) {
+          view.classList.remove('is-hidden');
+        } else {
+          view.classList.add('is-hidden');
+        }
+      });
+
+      // Smoothly scroll to top of view
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      // Immediate canvas redraw on new view container
+      requestAnimationFrame(() => {
+        renderCanvases();
+      });
+    }
+
     navPills.forEach(pill => {
       pill.addEventListener('click', () => {
-        navPills.forEach(p => p.classList.remove('active'));
-        pill.classList.add('active');
-
         const target = pill.getAttribute('data-nav');
-        if (target === 'overview') {
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        } else if (target === 'telemetry') {
-          const el = document.querySelector('.card-main-performance');
-          if (el) el.scrollIntoView({ behavior: 'smooth' });
-        } else if (target === 'residuals') {
-          const el = document.querySelector('.card-residuals');
-          if (el) el.scrollIntoView({ behavior: 'smooth' });
-        } else if (target === 'diagnostics') {
-          const el = document.querySelector('.card-diagnostics');
-          if (el) el.scrollIntoView({ behavior: 'smooth' });
-        } else if (target === 'mission') {
-          const el = document.querySelector('.card-advisory');
-          if (el) el.scrollIntoView({ behavior: 'smooth' });
-        } else if (target === 'history') {
-          const el = document.querySelector('.bottom-charts-row');
-          if (el) el.scrollIntoView({ behavior: 'smooth' });
-        }
+        switchPage(target);
+      });
+    });
+
+    // Quick Jump Buttons with [data-goto]
+    document.querySelectorAll('[data-goto]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const target = btn.getAttribute('data-goto');
+        switchPage(target);
       });
     });
 

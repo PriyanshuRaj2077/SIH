@@ -3,435 +3,525 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SIH26054 — ENGINE &amp; MISSION TELEMETRY SIMULATOR</title>
+  <title>TRINETRA-AERO — ENGINE &amp; MISSION TELEMETRY SIMULATOR</title>
   <link rel="stylesheet" href="style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body class="aerospace-theme">
-  <!-- Top Navigation Header -->
-  <header class="console-header">
-    <div class="brand-group">
-      <div class="brand-icon" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="10"/>
-          <circle cx="12" cy="12" r="3.5" fill="currentColor"/>
-          <path d="M12 8.5C12 5 13.5 3 15.5 2.5"/>
-          <path d="M14.47 9.53C17 7.5 19 8 20.8 9.2"/>
-          <path d="M15.5 12C19 12 21 13.5 21.5 15.5"/>
-          <path d="M14.47 14.47C16.5 17 16 19 14.8 20.8"/>
-          <path d="M12 15.5C12 19 10.5 21 8.5 21.5"/>
-          <path d="M9.53 14.47C7 16.5 5 16 3.2 14.8"/>
-          <path d="M8.5 12C5 12 3 10.5 2.5 8.5"/>
-          <path d="M9.53 9.53C7.5 7 8 5 9.2 3.2"/>
-        </svg>
-      </div>
-      <div class="brand-titles">
-        <h1 class="brand-main">SIH26054 <span class="badge-app">SIMULATOR</span></h1>
-        <span class="brand-sub">ENGINE &amp; MISSION TELEMETRY SIMULATOR</span>
-      </div>
-    </div>
-    <div class="header-status-strip">
-      <div class="status-pill">
-        <span class="dot live-pulse"></span>
-        <span class="label">BROADCAST:</span>
-        <span class="value" id="hdr-broadcast-status">10 Hz LIVE</span>
-      </div>
-      <div class="status-pill">
-        <span class="label">CLIENTS:</span>
-        <span class="value highlight-blue" id="hdr-clients-count">0</span>
-      </div>
-      <div class="status-pill">
-        <span class="label">PKTS SENT:</span>
-        <span class="value mono" id="hdr-packets-sent">0</span>
-      </div>
-      <div class="status-pill">
-        <span class="label">SIM TIME:</span>
-        <span class="value mono" id="hdr-sim-time">00:00:00</span>
-      </div>
-      <button class="btn btn-action" id="btn-toggle-sim">PAUSE SIM</button>
-    </div>
-  </header>
 
-  <!-- Main Grid Layout -->
-  <main class="console-grid">
-    <!-- LEFT PANEL: Operator Environmental & Flight Controls -->
-    <section class="console-card controls-panel">
-      <div class="card-header">
-        <div class="icon-title">
-          <svg class="icon" viewBox="0 0 24 24"><path d="M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3z"/></svg>
-          <h2>MISSION & ENVIRONMENT CONTROLS</h2>
+  <!-- ================= MAIN CENTERED APPLICATION CANVAS ================= -->
+  <div class="app-frame">
+
+    <!-- ================= 1. TOP NAVIGATION HEADER ================= -->
+    <header class="app-header">
+      <!-- Left: Simple Clean Branding matching Dashboard -->
+      <div class="header-brand">
+        <div class="brand-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <circle cx="12" cy="12" r="3.5" fill="currentColor"/>
+            <path d="M12 8.5C12 5 13.5 3 15.5 2.5"/>
+            <path d="M14.47 9.53C17 7.5 19 8 20.8 9.2"/>
+            <path d="M15.5 12C19 12 21 13.5 21.5 15.5"/>
+            <path d="M14.47 14.47C16.5 17 16 19 14.8 20.8"/>
+            <path d="M12 15.5C12 19 10.5 21 8.5 21.5"/>
+            <path d="M9.53 14.47C7 16.5 5 16 3.2 14.8"/>
+            <path d="M8.5 12C5 12 3 10.5 2.5 8.5"/>
+            <path d="M9.53 9.53C7.5 7 8 5 9.2 3.2"/>
+          </svg>
         </div>
-        <span class="badge badge-cyan">OPERATOR INPUT</span>
-      </div>
-
-      <!-- Quick Preset Flight Regimes -->
-      <div class="preset-regimes">
-        <button class="btn-preset" data-phase="ground_idle" data-throttle="20" data-alt="0">GROUND IDLE</button>
-        <button class="btn-preset" data-phase="takeoff" data-throttle="100" data-alt="500">TAKEOFF (100%)</button>
-        <button class="btn-preset" data-phase="climb" data-throttle="85" data-alt="12000">CLIMB (85%)</button>
-        <button class="btn-preset active" data-phase="cruise" data-throttle="72" data-alt="25000">CRUISE (72%)</button>
-        <button class="btn-preset" data-phase="loiter" data-throttle="55" data-alt="18000">LOITER (55%)</button>
-        <button class="btn-preset" data-phase="descent" data-throttle="32" data-alt="6000">DESCENT (32%)</button>
-      </div>
-
-      <div class="sliders-list">
-        <!-- Throttle Slider -->
-        <div class="control-row">
-          <div class="control-label-group">
-            <label for="slider-throttle">THROTTLE COMMAND</label>
-            <span class="value-display mono" id="val-throttle">72%</span>
+        <div class="brand-text">
+          <div class="brand-title-row">
+            <span class="brand-title">TRINETRA-AERO</span>
+            <span class="brand-badge">SIMULATOR</span>
           </div>
-          <input type="range" id="slider-throttle" min="0" max="100" step="1" value="72" class="slider-cyan">
-          <div class="range-ticks">
-            <span>IDLE (15%)</span>
-            <span>CRUISE (65-75%)</span>
-            <span>WOT (100%)</span>
-          </div>
-        </div>
-
-        <!-- Altitude Slider -->
-        <div class="control-row">
-          <div class="control-label-group">
-            <label for="slider-altitude">FLIGHT ALTITUDE (MSL)</label>
-            <span class="value-display mono" id="val-altitude">25,000 ft</span>
-          </div>
-          <input type="range" id="slider-altitude" min="0" max="32000" step="500" value="25000" class="slider-amber">
-          <div class="range-ticks">
-            <span>0 ft (Sea Level)</span>
-            <span>15,000 ft</span>
-            <span>32,000 ft (Ceiling)</span>
-          </div>
-        </div>
-
-        <!-- Ambient Temperature Slider -->
-        <div class="control-row">
-          <div class="control-label-group">
-            <label for="slider-ambient-temp">AMBIENT AIR TEMPERATURE</label>
-            <span class="value-display mono" id="val-ambient-temp">-20.0 °C</span>
-          </div>
-          <input type="range" id="slider-ambient-temp" min="-40" max="45" step="1" value="-20" class="slider-blue">
-          <div class="range-ticks">
-            <span>-40°C (High Alt)</span>
-            <span>+15°C (ISA Std)</span>
-            <span>+45°C (Desert Hot)</span>
-          </div>
-        </div>
-
-        <!-- Wind Speed Slider -->
-        <div class="control-row">
-          <div class="control-label-group">
-            <label for="slider-wind-speed">HEADWIND / AIRFLOW VELOCITY</label>
-            <span class="value-display mono" id="val-wind-speed">12 m/s</span>
-          </div>
-          <input type="range" id="slider-wind-speed" min="0" max="35" step="1" value="12" class="slider-green">
-          <div class="range-ticks">
-            <span>0 m/s (Calm)</span>
-            <span>15 m/s</span>
-            <span>35 m/s (Gale)</span>
-          </div>
-        </div>
-
-        <!-- Engine Load Slider -->
-        <div class="control-row">
-          <div class="control-label-group">
-            <label for="slider-engine-load">PROPELLER AERODYNAMIC LOAD</label>
-            <span class="value-display mono" id="val-engine-load">1.00x</span>
-          </div>
-          <input type="range" id="slider-engine-load" min="0.6" max="1.5" step="0.05" value="1.0" class="slider-purple">
-          <div class="range-ticks">
-            <span>0.6x (Low Drag / Dive)</span>
-            <span>1.0x (Nominal)</span>
-            <span>1.5x (High Pitch / Climb)</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- CENTER PANEL: Real-time Physical Engine Telemetry -->
-    <section class="console-card telemetry-panel">
-      <div class="card-header">
-        <div class="icon-title">
-          <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-          <h2>PHYSICAL ENGINE TELEMETRY (SIMULATED GROUND TRUTH)</h2>
-        </div>
-        <span class="badge badge-green">10 Hz STREAM</span>
-      </div>
-
-      <!-- Main Dial Cluster -->
-      <div class="dial-cluster">
-        <!-- RPM Dial Card -->
-        <div class="metric-card primary-card">
-          <span class="metric-tag">CRANKSHAFT SPEED</span>
-          <div class="metric-main">
-            <span class="big-metric mono" id="tel-rpm">4820</span>
-            <span class="metric-unit">RPM</span>
-          </div>
-          <div class="progress-bar-wrap">
-            <div class="progress-bar bar-cyan" id="bar-rpm" style="width: 83%;"></div>
-          </div>
-          <div class="metric-sub-info">
-            <span>Max: 5,800 RPM</span>
-            <span id="tel-power-kw">68.4 kW (91.7 HP)</span>
-          </div>
-        </div>
-
-        <!-- MAP Dial Card -->
-        <div class="metric-card">
-          <span class="metric-tag">MANIFOLD PRESSURE</span>
-          <div class="metric-main">
-            <span class="big-metric mono" id="tel-map">82.4</span>
-            <span class="metric-unit">kPa</span>
-          </div>
-          <div class="progress-bar-wrap">
-            <div class="progress-bar bar-amber" id="bar-map" style="width: 75%;"></div>
-          </div>
-          <div class="metric-sub-info">
-            <span>24.3 inHg</span>
-            <span id="tel-fuel-flow">18.4 L/h</span>
-          </div>
-        </div>
-
-        <!-- Oil System Card -->
-        <div class="metric-card">
-          <span class="metric-tag">LUBRICATION SYSTEM</span>
-          <div class="dual-metric-row">
-            <div>
-              <span class="sub-tag">PRESSURE</span>
-              <span class="medium-metric mono" id="tel-oil-press">4.12</span>
-              <span class="metric-unit">bar</span>
-            </div>
-            <div>
-              <span class="sub-tag">TEMPERATURE</span>
-              <span class="medium-metric mono" id="tel-oil-temp">89.4</span>
-              <span class="metric-unit">°C</span>
-            </div>
-          </div>
-          <div class="progress-bar-wrap">
-            <div class="progress-bar bar-green" id="bar-oil-press" style="width: 65%;"></div>
-          </div>
-        </div>
-
-        <!-- Coolant & Vibration Card -->
-        <div class="metric-card">
-          <span class="metric-tag">COOLANT & VIBRATION</span>
-          <div class="dual-metric-row">
-            <div>
-              <span class="sub-tag">COOLANT</span>
-              <span class="medium-metric mono" id="tel-coolant">82.1</span>
-              <span class="metric-unit">°C</span>
-            </div>
-            <div>
-              <span class="sub-tag">VIB RMS</span>
-              <span class="medium-metric mono" id="tel-vibration">0.68</span>
-              <span class="metric-unit">mm/s</span>
-            </div>
-          </div>
-          <div class="progress-bar-wrap">
-            <div class="progress-bar bar-blue" id="bar-coolant" style="width: 70%;"></div>
-          </div>
+          <span class="brand-sub">TAPAS-BH-201 &bull; ROTAX 914 F TURBOCHARGED (115 HP)</span>
         </div>
       </div>
 
-      <!-- Multi-Cylinder Temperature Matrix -->
-      <div class="cylinder-matrix-container">
-        <h3 class="section-subtitle">CYLINDER HEAD & EXHAUST TEMPERATURE DISTRIBUTION</h3>
-        <div class="cylinder-grid">
-          <!-- Cylinder 1 -->
-          <div class="cylinder-card" id="card-cyl-1">
-            <span class="cyl-header">CYLINDER 1</span>
-            <div class="temp-readout">
-              <span class="label">CHT</span>
-              <span class="val mono" id="tel-cht-1">92.4 °C</span>
-            </div>
-            <div class="bar-horizontal"><div class="fill" id="bar-cht-1" style="width: 60%;"></div></div>
-            <div class="temp-readout">
-              <span class="label">EGT</span>
-              <span class="val mono" id="tel-egt-1">725 °C</span>
-            </div>
-            <div class="bar-horizontal"><div class="fill fill-orange" id="bar-egt-1" style="width: 78%;"></div></div>
-          </div>
-
-          <!-- Cylinder 2 -->
-          <div class="cylinder-card" id="card-cyl-2">
-            <span class="cyl-header">CYLINDER 2</span>
-            <div class="temp-readout">
-              <span class="label">CHT</span>
-              <span class="val mono" id="tel-cht-2">93.1 °C</span>
-            </div>
-            <div class="bar-horizontal"><div class="fill" id="bar-cht-2" style="width: 61%;"></div></div>
-            <div class="temp-readout">
-              <span class="label">EGT</span>
-              <span class="val mono" id="tel-egt-2">730 °C</span>
-            </div>
-            <div class="bar-horizontal"><div class="fill fill-orange" id="bar-egt-2" style="width: 79%;"></div></div>
-          </div>
-
-          <!-- Cylinder 3 -->
-          <div class="cylinder-card" id="card-cyl-3">
-            <span class="cyl-header">CYLINDER 3</span>
-            <div class="temp-readout">
-              <span class="label">CHT</span>
-              <span class="val mono" id="tel-cht-3">94.5 °C</span>
-            </div>
-            <div class="bar-horizontal"><div class="fill" id="bar-cht-3" style="width: 63%;"></div></div>
-            <div class="temp-readout">
-              <span class="label">EGT</span>
-              <span class="val mono" id="tel-egt-3">738 °C</span>
-            </div>
-            <div class="bar-horizontal"><div class="fill fill-orange" id="bar-egt-3" style="width: 81%;"></div></div>
-          </div>
-
-          <!-- Cylinder 4 -->
-          <div class="cylinder-card" id="card-cyl-4">
-            <span class="cyl-header">CYLINDER 4</span>
-            <div class="temp-readout">
-              <span class="label">CHT</span>
-              <span class="val mono" id="tel-cht-4">91.8 °C</span>
-            </div>
-            <div class="bar-horizontal"><div class="fill" id="bar-cht-4" style="width: 59%;"></div></div>
-            <div class="temp-readout">
-              <span class="label">EGT</span>
-              <span class="val mono" id="tel-egt-4">722 °C</span>
-            </div>
-            <div class="bar-horizontal"><div class="fill fill-orange" id="bar-egt-4" style="width: 77%;"></div></div>
-          </div>
+      <!-- Center / Right: Telemetry Broadcast Status Strip -->
+      <div class="header-status-strip">
+        <div class="status-pill">
+          <span class="chip-dot dot-green live-pulse"></span>
+          <span class="label">BROADCAST:</span>
+          <strong class="mono" id="hdr-broadcast-status">10 Hz LIVE</strong>
         </div>
+        <div class="status-pill">
+          <span class="label">CLIENTS:</span>
+          <strong class="mono text-yellow" id="hdr-clients-count">0</strong>
+        </div>
+        <div class="status-pill">
+          <span class="label">PKTS SENT:</span>
+          <strong class="mono" id="hdr-packets-sent">0</strong>
+        </div>
+        <div class="status-pill">
+          <span class="label">SIM TIME:</span>
+          <strong class="mono" id="hdr-sim-time">00:00:00</strong>
+        </div>
+        <button type="button" class="btn-pause-sim" id="btn-toggle-sim">PAUSE SIM</button>
+        <!-- Compact Sun/Moon Theme Toggle Button -->
+        <button type="button" class="btn-round" id="theme-toggle" title="Toggle Light/Dark Mode" aria-label="Toggle Light/Dark Mode">
+          <svg class="theme-icon-sun" viewBox="0 0 24 24" style="display:none;"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+          <svg class="theme-icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
       </div>
-    </section>
+    </header>
 
-    <!-- RIGHT PANEL: Fault Injection Deck -->
-    <section class="console-card faults-panel">
-      <div class="card-header">
-        <div class="icon-title">
-          <svg class="icon icon-alert" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-          <h2>FAULT & DEGRADATION INJECTION</h2>
+    <!-- ================= 2. MAIN 3-COLUMN CONSOLE GRID ================= -->
+    <main class="console-grid">
+
+      <!-- COLUMN 1: Operator Environmental & Flight Controls -->
+      <section class="console-card controls-panel">
+        <div class="card-header-split">
+          <div class="card-title-group">
+            <h2 class="card-title">Mission &amp; Flight Controls</h2>
+            <span class="card-subtext">Operator input parameters &amp; ambient environment</span>
+          </div>
+          <span class="status-chip mono" style="font-size: 10px;">
+            <span class="chip-dot dot-yellow"></span>
+            OPERATOR INPUT
+          </span>
         </div>
-        <button class="btn btn-reset-all" id="btn-clear-all-faults">RESET ALL</button>
+
+        <!-- Quick Preset Flight Regimes -->
+        <div class="preset-regimes">
+          <button type="button" class="btn-preset" data-phase="ground_idle" data-throttle="20" data-alt="0">IDLE</button>
+          <button type="button" class="btn-preset" data-phase="takeoff" data-throttle="100" data-alt="500">TAKEOFF</button>
+          <button type="button" class="btn-preset" data-phase="climb" data-throttle="85" data-alt="12000">CLIMB</button>
+          <button type="button" class="btn-preset active" data-phase="cruise" data-throttle="72" data-alt="25000">CRUISE</button>
+          <button type="button" class="btn-preset" data-phase="loiter" data-throttle="55" data-alt="18000">LOITER</button>
+          <button type="button" class="btn-preset" data-phase="descent" data-throttle="32" data-alt="6000">DESCENT</button>
+        </div>
+
+        <!-- Sliders List -->
+        <div class="sliders-list">
+          <!-- Throttle Slider -->
+          <div class="control-row">
+            <div class="control-label-group">
+              <label for="slider-throttle">THROTTLE COMMAND</label>
+              <span class="value-display mono text-yellow" id="val-throttle">72%</span>
+            </div>
+            <input type="range" id="slider-throttle" min="0" max="100" step="1" value="72" class="slider-yellow">
+            <div class="range-ticks mono">
+              <span>IDLE (15%)</span>
+              <span>CRUISE (65-75%)</span>
+              <span>WOT (100%)</span>
+            </div>
+          </div>
+
+          <!-- Altitude Slider -->
+          <div class="control-row">
+            <div class="control-label-group">
+              <label for="slider-altitude">FLIGHT ALTITUDE (MSL)</label>
+              <span class="value-display mono" id="val-altitude">25,000 ft</span>
+            </div>
+            <input type="range" id="slider-altitude" min="0" max="32000" step="500" value="25000" class="slider-yellow">
+            <div class="range-ticks mono">
+              <span>0 ft</span>
+              <span>15,000 ft</span>
+              <span>32,000 ft</span>
+            </div>
+          </div>
+
+          <!-- Ambient Temperature Slider -->
+          <div class="control-row">
+            <div class="control-label-group">
+              <label for="slider-ambient-temp">AMBIENT AIR TEMPERATURE</label>
+              <span class="value-display mono" id="val-ambient-temp">-20.0 &deg;C</span>
+            </div>
+            <input type="range" id="slider-ambient-temp" min="-40" max="45" step="1" value="-20" class="slider-yellow">
+            <div class="range-ticks mono">
+              <span>-40&deg;C (High Alt)</span>
+              <span>+15&deg;C (Std)</span>
+              <span>+45&deg;C (Hot)</span>
+            </div>
+          </div>
+
+          <!-- Wind Speed Slider -->
+          <div class="control-row">
+            <div class="control-label-group">
+              <label for="slider-wind-speed">AIRFLOW / HEADWIND VELOCITY</label>
+              <span class="value-display mono" id="val-wind-speed">12 m/s</span>
+            </div>
+            <input type="range" id="slider-wind-speed" min="0" max="35" step="1" value="12" class="slider-yellow">
+            <div class="range-ticks mono">
+              <span>0 m/s (Calm)</span>
+              <span>15 m/s</span>
+              <span>35 m/s (Gale)</span>
+            </div>
+          </div>
+
+          <!-- Engine Load Slider -->
+          <div class="control-row">
+            <div class="control-label-group">
+              <label for="slider-engine-load">PROPELLER AERODYNAMIC LOAD</label>
+              <span class="value-display mono" id="val-engine-load">1.00x</span>
+            </div>
+            <input type="range" id="slider-engine-load" min="0.6" max="1.5" step="0.05" value="1.0" class="slider-yellow">
+            <div class="range-ticks mono">
+              <span>0.6x (Low Drag)</span>
+              <span>1.0x (Nominal)</span>
+              <span>1.5x (High Pitch)</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- COLUMN 2: 3D Drone Viewport + Live Engine Telemetry -->
+      <section class="center-panel-stack">
+
+        <!-- 3D DRONE FLIGHT VIEWPORT -->
+        <div class="console-card drone-viewport-card">
+          <div class="card-header-split">
+            <div class="card-title-group">
+              <div class="title-with-badge">
+                <h2 class="card-title">TAPAS-BH-201 Tactical UAV — 3D Spatial Attitude</h2>
+                <span class="status-chip mono" style="font-size: 10px;">
+                  <span class="chip-dot dot-green"></span>
+                  SPATIAL 3D TWIN
+                </span>
+              </div>
+              <span class="card-subtext">Real-time attitude dynamics &bull; Propeller rpm sync &bull; 360&deg; interactive orbit</span>
+            </div>
+            <div class="drone-viewport-actions">
+              <button type="button" class="btn-drone-action" id="btn-drone-reset" title="Reset Camera View">
+                <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                Reset View
+              </button>
+              <button type="button" class="btn-drone-action active" id="btn-drone-spin" title="Toggle Auto Rotation">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M16 12l-4-4v8z"/></svg>
+                Auto-Orbit
+              </button>
+            </div>
+          </div>
+
+          <!-- 3D Canvas Viewport Wrap -->
+          <div class="drone-canvas-wrap" id="drone-canvas-wrap">
+            <canvas id="drone-3d-canvas"></canvas>
+
+            <!-- Overlay HUD telemetry indicators -->
+            <div class="drone-hud-overlay">
+              <div class="hud-top-left mono">
+                <div class="hud-item">PITCH: <span id="hud-pitch">0.0&deg;</span></div>
+                <div class="hud-item">ROLL: <span id="hud-roll">0.0&deg;</span></div>
+                <div class="hud-item">THROTTLE: <span class="text-yellow" id="hud-throttle">72%</span></div>
+              </div>
+
+              <!-- Warning Banner in 3D HUD (Visible on faults) -->
+              <div class="hud-alert-banner" id="hud-fault-alert" style="display: none;">
+                <span class="alert-icon-dot"></span>
+                <span id="hud-alert-text">ENGINE ANOMALY DETECTED</span>
+              </div>
+
+              <div class="hud-bottom-tip mono">
+                <span>&bull; Drag to Orbit &bull; Scroll to Zoom &bull; Propellers Proportional to Engine RPM</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PHYSICAL ENGINE TELEMETRY PANEL -->
+        <div class="console-card telemetry-panel">
+          <div class="card-header-split">
+            <div class="card-title-group">
+              <h2 class="card-title">Physical Engine Telemetry (Ground Truth Stream)</h2>
+              <span class="card-subtext">Multiphysics powertrain outputs &bull; 10 Hz broadcast</span>
+            </div>
+            <span class="status-chip mono" style="font-size: 10px;">
+              <span class="chip-dot dot-green"></span>
+              BROADCAST STREAM
+            </span>
+          </div>
+
+          <!-- Main Dial Cluster -->
+          <div class="dial-cluster">
+            <!-- RPM Dial Card -->
+            <div class="metric-card primary-card">
+              <span class="metric-tag">CRANKSHAFT SPEED</span>
+              <div class="metric-main">
+                <span class="big-metric mono text-yellow" id="tel-rpm">4820</span>
+                <span class="metric-unit">RPM</span>
+              </div>
+              <div class="progress-track">
+                <div class="progress-fill-yellow" id="bar-rpm" style="width: 83%;"></div>
+              </div>
+              <div class="metric-sub-info mono">
+                <span>Max: 5,800 RPM</span>
+                <span id="tel-power-kw">68.4 kW (91.7 HP)</span>
+              </div>
+            </div>
+
+            <!-- MAP Dial Card -->
+            <div class="metric-card">
+              <span class="metric-tag">MANIFOLD PRESSURE</span>
+              <div class="metric-main">
+                <span class="big-metric mono" id="tel-map">82.4</span>
+                <span class="metric-unit">kPa</span>
+              </div>
+              <div class="progress-track">
+                <div class="progress-fill-yellow" id="bar-map" style="width: 75%;"></div>
+              </div>
+              <div class="metric-sub-info mono">
+                <span>24.3 inHg</span>
+                <span id="tel-fuel-flow">18.4 L/h</span>
+              </div>
+            </div>
+
+            <!-- Oil System Card -->
+            <div class="metric-card">
+              <span class="metric-tag">LUBRICATION SYSTEM</span>
+              <div class="dual-metric-row">
+                <div>
+                  <span class="sub-tag">PRESSURE</span>
+                  <div class="dual-metric-val">
+                    <span class="medium-metric mono" id="tel-oil-press">4.12</span>
+                    <span class="metric-unit">bar</span>
+                  </div>
+                </div>
+                <div>
+                  <span class="sub-tag">TEMP</span>
+                  <div class="dual-metric-val">
+                    <span class="medium-metric mono" id="tel-oil-temp">89.4</span>
+                    <span class="metric-unit">&deg;C</span>
+                  </div>
+                </div>
+              </div>
+              <div class="progress-track">
+                <div class="progress-fill-green" id="bar-oil-press" style="width: 65%;"></div>
+              </div>
+            </div>
+
+            <!-- Coolant & Vibration Card -->
+            <div class="metric-card">
+              <span class="metric-tag">COOLANT &amp; VIBRATION</span>
+              <div class="dual-metric-row">
+                <div>
+                  <span class="sub-tag">COOLANT</span>
+                  <div class="dual-metric-val">
+                    <span class="medium-metric mono" id="tel-coolant">82.1</span>
+                    <span class="metric-unit">&deg;C</span>
+                  </div>
+                </div>
+                <div>
+                  <span class="sub-tag">VIB RMS</span>
+                  <div class="dual-metric-val">
+                    <span class="medium-metric mono" id="tel-vibration">0.68</span>
+                    <span class="metric-unit">mm/s</span>
+                  </div>
+                </div>
+              </div>
+              <div class="progress-track">
+                <div class="progress-fill-yellow" id="bar-coolant" style="width: 70%;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Multi-Cylinder Temperature Matrix -->
+          <div class="cylinder-matrix-container">
+            <span class="section-subtitle">CYLINDER HEAD &amp; EXHAUST TEMPERATURE DISTRIBUTION</span>
+            <div class="cylinder-grid">
+              <!-- Cylinder 1 -->
+              <div class="cylinder-card" id="card-cyl-1">
+                <span class="cyl-header mono">CYLINDER 1</span>
+                <div class="temp-readout">
+                  <span class="label">CHT</span>
+                  <span class="val mono" id="tel-cht-1">92.4 &deg;C</span>
+                </div>
+                <div class="progress-track"><div class="progress-fill-yellow" id="bar-cht-1" style="width: 60%;"></div></div>
+                <div class="temp-readout">
+                  <span class="label">EGT</span>
+                  <span class="val mono text-yellow" id="tel-egt-1">725 &deg;C</span>
+                </div>
+                <div class="progress-track"><div class="progress-fill-yellow" id="bar-egt-1" style="width: 78%;"></div></div>
+              </div>
+
+              <!-- Cylinder 2 -->
+              <div class="cylinder-card" id="card-cyl-2">
+                <span class="cyl-header mono">CYLINDER 2</span>
+                <div class="temp-readout">
+                  <span class="label">CHT</span>
+                  <span class="val mono" id="tel-cht-2">93.1 &deg;C</span>
+                </div>
+                <div class="progress-track"><div class="progress-fill-yellow" id="bar-cht-2" style="width: 61%;"></div></div>
+                <div class="temp-readout">
+                  <span class="label">EGT</span>
+                  <span class="val mono text-yellow" id="tel-egt-2">730 &deg;C</span>
+                </div>
+                <div class="progress-track"><div class="progress-fill-yellow" id="bar-egt-2" style="width: 79%;"></div></div>
+              </div>
+
+              <!-- Cylinder 3 -->
+              <div class="cylinder-card" id="card-cyl-3">
+                <span class="cyl-header mono">CYLINDER 3</span>
+                <div class="temp-readout">
+                  <span class="label">CHT</span>
+                  <span class="val mono" id="tel-cht-3">94.5 &deg;C</span>
+                </div>
+                <div class="progress-track"><div class="progress-fill-yellow" id="bar-cht-3" style="width: 63%;"></div></div>
+                <div class="temp-readout">
+                  <span class="label">EGT</span>
+                  <span class="val mono text-yellow" id="tel-egt-3">738 &deg;C</span>
+                </div>
+                <div class="progress-track"><div class="progress-fill-yellow" id="bar-egt-3" style="width: 81%;"></div></div>
+              </div>
+
+              <!-- Cylinder 4 -->
+              <div class="cylinder-card" id="card-cyl-4">
+                <span class="cyl-header mono">CYLINDER 4</span>
+                <div class="temp-readout">
+                  <span class="label">CHT</span>
+                  <span class="val mono" id="tel-cht-4">91.8 &deg;C</span>
+                </div>
+                <div class="progress-track"><div class="progress-fill-yellow" id="bar-cht-4" style="width: 59%;"></div></div>
+                <div class="temp-readout">
+                  <span class="label">EGT</span>
+                  <span class="val mono text-yellow" id="tel-egt-4">722 &deg;C</span>
+                </div>
+                <div class="progress-track"><div class="progress-fill-yellow" id="bar-egt-4" style="width: 77%;"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- COLUMN 3: Fault & Degradation Injection Deck -->
+      <section class="console-card faults-panel">
+        <div class="card-header-split">
+          <div class="card-title-group">
+            <h2 class="card-title">Fault &amp; Degradation Injection</h2>
+            <span class="card-subtext">Trigger realistic failure modes</span>
+          </div>
+          <button type="button" class="btn-reset-all" id="btn-clear-all-faults">RESET ALL</button>
+        </div>
+
+        <div class="faults-scroll-list">
+          <!-- Fault 1: Lubrication Failure -->
+          <div class="fault-item" id="fault-item-lubrication_failure">
+            <div class="fault-header-row">
+              <div class="fault-info">
+                <span class="fault-name">F05: LUBRICATION COLLAPSE</span>
+                <span class="fault-desc">Oil pump wear / relief leak (P_oil &lt; 2.0 bar, T_oil spike)</span>
+              </div>
+              <button type="button" class="btn-fault-toggle" data-fault="lubrication_failure">INJECT</button>
+            </div>
+            <div class="fault-controls">
+              <label>Severity: <span class="mono sev-val text-yellow" id="sev-val-lubrication_failure">80%</span></label>
+              <input type="range" class="slider-red fault-slider" data-fault="lubrication_failure" min="0.2" max="1.0" step="0.05" value="0.8">
+            </div>
+          </div>
+
+          <!-- Fault 2: Cooling Degradation -->
+          <div class="fault-item" id="fault-item-overheating">
+            <div class="fault-header-row">
+              <div class="fault-info">
+                <span class="fault-name">F06: COOLING FAILURE</span>
+                <span class="fault-desc">Radiator airflow blockage (CHT &gt; 145&deg;C, Coolant &gt; 115&deg;C)</span>
+              </div>
+              <button type="button" class="btn-fault-toggle" data-fault="overheating">INJECT</button>
+            </div>
+            <div class="fault-controls">
+              <label>Severity: <span class="mono sev-val text-yellow" id="sev-val-overheating">70%</span></label>
+              <input type="range" class="slider-red fault-slider" data-fault="overheating" min="0.2" max="1.0" step="0.05" value="0.7">
+            </div>
+          </div>
+
+          <!-- Fault 3: Fuel Injector Partial Clog (Lean Burn) -->
+          <div class="fault-item" id="fault-item-injector_clog">
+            <div class="fault-header-row">
+              <div class="fault-info">
+                <span class="fault-name">F03: INJECTOR CLOG (LEAN)</span>
+                <span class="fault-desc">Localized lean burn (Cyl 3 EGT &gt; 860&deg;C thermal spike)</span>
+              </div>
+              <button type="button" class="btn-fault-toggle" data-fault="injector_clog">INJECT</button>
+            </div>
+            <div class="fault-controls">
+              <label>Severity: <span class="mono sev-val text-yellow" id="sev-val-injector_clog">75%</span></label>
+              <input type="range" class="slider-red fault-slider" data-fault="injector_clog" min="0.2" max="1.0" step="0.05" value="0.75">
+            </div>
+          </div>
+
+          <!-- Fault 4: Ignition Spark Misfire -->
+          <div class="fault-item" id="fault-item-ignition_misfire">
+            <div class="fault-header-row">
+              <div class="fault-info">
+                <span class="fault-name">F02: IGNITION MISFIRE</span>
+                <span class="fault-desc">Cyl 3 spark failure (EGT plunges to 480&deg;C, RPM flutter)</span>
+              </div>
+              <button type="button" class="btn-fault-toggle" data-fault="ignition_misfire">INJECT</button>
+            </div>
+            <div class="fault-controls">
+              <label>Severity: <span class="mono sev-val text-yellow" id="sev-val-ignition_misfire">80%</span></label>
+              <input type="range" class="slider-red fault-slider" data-fault="ignition_misfire" min="0.2" max="1.0" step="0.05" value="0.8">
+            </div>
+          </div>
+
+          <!-- Fault 5: Bearing Mechanical Wear -->
+          <div class="fault-item" id="fault-item-bearing_wear">
+            <div class="fault-header-row">
+              <div class="fault-info">
+                <span class="fault-name">F08: BEARING WEAR</span>
+                <span class="fault-desc">Main journal / gear race fatigue (Vibration &gt; 5.0 mm/s)</span>
+              </div>
+              <button type="button" class="btn-fault-toggle" data-fault="bearing_wear">INJECT</button>
+            </div>
+            <div class="fault-controls">
+              <label>Severity: <span class="mono sev-val text-yellow" id="sev-val-bearing_wear">85%</span></label>
+              <input type="range" class="slider-red fault-slider" data-fault="bearing_wear" min="0.2" max="1.0" step="0.05" value="0.85">
+            </div>
+          </div>
+
+          <!-- Fault 6: Cylinder Compression Loss -->
+          <div class="fault-item" id="fault-item-compression_loss">
+            <div class="fault-header-row">
+              <div class="fault-info">
+                <span class="fault-name">F01: COMPRESSION LOSS</span>
+                <span class="fault-desc">Piston ring blowby (&eta;_vol degradation &amp; power drop)</span>
+              </div>
+              <button type="button" class="btn-fault-toggle" data-fault="compression_loss">INJECT</button>
+            </div>
+            <div class="fault-controls">
+              <label>Severity: <span class="mono sev-val text-yellow" id="sev-val-compression_loss">65%</span></label>
+              <input type="range" class="slider-red fault-slider" data-fault="compression_loss" min="0.2" max="1.0" step="0.05" value="0.65">
+            </div>
+          </div>
+
+          <!-- Fault 7: Sensor Probe Bias Drift -->
+          <div class="fault-item" id="fault-item-sensor_drift">
+            <div class="fault-header-row">
+              <div class="fault-info">
+                <span class="fault-name">F11: SENSOR PROBE DRIFT</span>
+                <span class="fault-desc">Cyl 2 CHT thermocouple junction bias (+42&deg;C fake offset)</span>
+              </div>
+              <button type="button" class="btn-fault-toggle" data-fault="sensor_drift">INJECT</button>
+            </div>
+            <div class="fault-controls">
+              <label>Severity: <span class="mono sev-val text-yellow" id="sev-val-sensor_drift">60%</span></label>
+              <input type="range" class="slider-red fault-slider" data-fault="sensor_drift" min="0.2" max="1.0" step="0.05" value="0.6">
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- ================= 3. BOTTOM TELEMETRY BROADCAST FOOTER ================= -->
+    <footer class="app-footer">
+      <div class="footer-endpoint">
+        <span class="chip-dot dot-green"></span>
+        <span class="label">TELEMETRY BROADCAST ENDPOINT:</span>
+        <span class="code-mono">ws://127.0.0.1:8765/telemetry</span>
+        <span class="status-chip mono">UDP :9000</span>
       </div>
-
-      <div class="faults-scroll-list">
-        <!-- Fault 1: Lubrication Failure -->
-        <div class="fault-item" id="fault-item-lubrication_failure">
-          <div class="fault-header-row">
-            <div class="fault-info">
-              <span class="fault-name">F05: LUBRICATION COLLAPSE</span>
-              <span class="fault-desc">Oil pump wear / relief leak (P_oil &lt; 2.0 bar, T_oil spike)</span>
-            </div>
-            <button class="btn-fault-toggle" data-fault="lubrication_failure">INJECT</button>
-          </div>
-          <div class="fault-controls">
-            <label>Severity: <span class="mono sev-val" id="sev-val-lubrication_failure">80%</span></label>
-            <input type="range" class="slider-red fault-slider" data-fault="lubrication_failure" min="0.2" max="1.0" step="0.05" value="0.8">
-          </div>
-        </div>
-
-        <!-- Fault 2: Cooling Degradation -->
-        <div class="fault-item" id="fault-item-overheating">
-          <div class="fault-header-row">
-            <div class="fault-info">
-              <span class="fault-name">F06: COOLING FAILURE</span>
-              <span class="fault-desc">Radiator airflow blockage (CHT &gt; 145°C, Coolant &gt; 115°C)</span>
-            </div>
-            <button class="btn-fault-toggle" data-fault="overheating">INJECT</button>
-          </div>
-          <div class="fault-controls">
-            <label>Severity: <span class="mono sev-val" id="sev-val-overheating">70%</span></label>
-            <input type="range" class="slider-red fault-slider" data-fault="overheating" min="0.2" max="1.0" step="0.05" value="0.7">
-          </div>
-        </div>
-
-        <!-- Fault 3: Fuel Injector Partial Clog (Lean Burn) -->
-        <div class="fault-item" id="fault-item-injector_clog">
-          <div class="fault-header-row">
-            <div class="fault-info">
-              <span class="fault-name">F03: INJECTOR CLOG (LEAN)</span>
-              <span class="fault-desc">Localized lean burn (Cyl 3 EGT &gt; 860°C thermal spike)</span>
-            </div>
-            <button class="btn-fault-toggle" data-fault="injector_clog">INJECT</button>
-          </div>
-          <div class="fault-controls">
-            <label>Severity: <span class="mono sev-val" id="sev-val-injector_clog">75%</span></label>
-            <input type="range" class="slider-red fault-slider" data-fault="injector_clog" min="0.2" max="1.0" step="0.05" value="0.75">
-          </div>
-        </div>
-
-        <!-- Fault 4: Ignition Spark Misfire -->
-        <div class="fault-item" id="fault-item-ignition_misfire">
-          <div class="fault-header-row">
-            <div class="fault-info">
-              <span class="fault-name">F02: IGNITION MISFIRE</span>
-              <span class="fault-desc">Cyl 3 spark failure (EGT plunges to 480°C, RPM flutter)</span>
-            </div>
-            <button class="btn-fault-toggle" data-fault="ignition_misfire">INJECT</button>
-          </div>
-          <div class="fault-controls">
-            <label>Severity: <span class="mono sev-val" id="sev-val-ignition_misfire">80%</span></label>
-            <input type="range" class="slider-red fault-slider" data-fault="ignition_misfire" min="0.2" max="1.0" step="0.05" value="0.8">
-          </div>
-        </div>
-
-        <!-- Fault 5: Bearing Mechanical Wear -->
-        <div class="fault-item" id="fault-item-bearing_wear">
-          <div class="fault-header-row">
-            <div class="fault-info">
-              <span class="fault-name">F08: BEARING WEAR</span>
-              <span class="fault-desc">Main journal / gear race fatigue (Vibration &gt; 5.0 mm/s)</span>
-            </div>
-            <button class="btn-fault-toggle" data-fault="bearing_wear">INJECT</button>
-          </div>
-          <div class="fault-controls">
-            <label>Severity: <span class="mono sev-val" id="sev-val-bearing_wear">85%</span></label>
-            <input type="range" class="slider-red fault-slider" data-fault="bearing_wear" min="0.2" max="1.0" step="0.05" value="0.85">
-          </div>
-        </div>
-
-        <!-- Fault 6: Cylinder Compression Loss -->
-        <div class="fault-item" id="fault-item-compression_loss">
-          <div class="fault-header-row">
-            <div class="fault-info">
-              <span class="fault-name">F01: COMPRESSION LOSS</span>
-              <span class="fault-desc">Piston ring bypass &amp; blowby (η_vol degradation &amp; power drop)</span>
-            </div>
-            <button class="btn-fault-toggle" data-fault="compression_loss">INJECT</button>
-          </div>
-          <div class="fault-controls">
-            <label>Severity: <span class="mono sev-val" id="sev-val-compression_loss">65%</span></label>
-            <input type="range" class="slider-red fault-slider" data-fault="compression_loss" min="0.2" max="1.0" step="0.05" value="0.65">
-          </div>
-        </div>
-
-        <!-- Fault 7: Sensor Probe Bias Drift -->
-        <div class="fault-item" id="fault-item-sensor_drift">
-          <div class="fault-header-row">
-            <div class="fault-info">
-              <span class="fault-name">F11: SENSOR PROBE DRIFT</span>
-              <span class="fault-desc">Cyl 2 CHT thermocouple junction bias (+42°C fake offset)</span>
-            </div>
-            <button class="btn-fault-toggle" data-fault="sensor_drift">INJECT</button>
-          </div>
-          <div class="fault-controls">
-            <label>Severity: <span class="mono sev-val" id="sev-val-sensor_drift">60%</span></label>
-            <input type="range" class="slider-red fault-slider" data-fault="sensor_drift" min="0.2" max="1.0" step="0.05" value="0.6">
-          </div>
-        </div>
+      <div class="footer-msg">
+        <span>Ready for independent <strong>Dashboard.exe</strong> connection &bull; TRINETRA-AERO Engine Sim</span>
       </div>
-    </section>
-  </main>
+    </footer>
 
-  <!-- Bottom Telemetry Broadcast Footer -->
-  <footer class="console-footer">
-    <div class="footer-endpoint">
-      <span class="label">TELEMETRY BROADCAST ENDPOINT:</span>
-      <span class="code-mono">ws://127.0.0.1:8765/telemetry</span>
-      <span class="badge badge-pill">UDP :9000</span>
-    </div>
-    <div class="footer-msg">
-      <span>Ready for independent <strong>Dashboard.exe</strong> connection</span>
-    </div>
-  </footer>
+  </div>
 
+  <!-- Load Three.js library locally, then application scripts -->
+  <script src="three.min.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

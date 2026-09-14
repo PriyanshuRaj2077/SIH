@@ -62,9 +62,9 @@
   --text-white: #FFFFFF;
   --text-bright: #FFFFFF;
   --text-main: #FFFFFF;
-  --text-secondary: #94A3B8;
-  --text-muted: #64748B;
-  --text-dim: #475569;
+  --text-secondary: #CBD5E1;
+  --text-muted: #94A3B8;
+  --text-dim: #64748B;
 
   /* Fonts */
   --font-body: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -734,6 +734,31 @@ body.aerospace-theme {
   flex-direction: column;
   gap: 22px;
   border: 1px solid var(--border-card);
+}
+
+/* =====================================================================
+   DEDICATED PAGE VIEW CONTAINERS (Overview, Diagnostics, Mission)
+   ===================================================================== */
+.page-view {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  animation: pageFadeIn 0.24s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.page-view.is-hidden {
+  display: none !important;
+}
+
+@keyframes pageFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* =====================================================================
@@ -1908,8 +1933,108 @@ body.aerospace-theme {
 }
 
 /* =====================================================================
-   5. LOWER ROW: DIAGNOSTICS + HEALTH COCKPIT + MISSION ADVISORY
+   OVERVIEW SECONDARY ROW & DIAGNOSTICS PAGE GRIDS
    ===================================================================== */
+.overview-secondary-grid {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  gap: 22px;
+  align-items: stretch;
+}
+
+.card-overview-synopsis {
+  background: var(--card-bg);
+  border-radius: var(--radius-card);
+  border: 1px solid var(--border-subtle);
+  padding: 24px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  box-shadow: var(--shadow-card);
+}
+
+.synopsis-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.synopsis-item {
+  background: var(--card-inset);
+  border-radius: var(--radius-inner);
+  border: 1px solid var(--border-subtle);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.synopsis-label {
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.synopsis-val {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-white);
+}
+
+.synopsis-sub {
+  font-size: 10.5px;
+  color: var(--text-secondary);
+}
+
+.synopsis-cta-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: auto;
+  padding-top: 8px;
+}
+
+.btn-synopsis-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--accent-yellow-subtle);
+  color: var(--accent-yellow);
+  border: 1px solid var(--accent-yellow-border);
+  padding: 9px 20px;
+  border-radius: var(--radius-pill);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-synopsis-cta:hover {
+  background: var(--accent-yellow);
+  color: #0C0F14;
+  box-shadow: 0 4px 14px var(--accent-yellow-glow);
+}
+
+/* Dedicated Diagnostics & Mission Page Grids */
+.diag-top-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  gap: 22px;
+  align-items: stretch;
+}
+
+.diag-bottom-grid {
+  display: flex;
+  flex-direction: column;
+}
+
+.mission-thermal-grid {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Legacy layout support */
 .lower-trio-grid {
   display: grid;
   grid-template-columns: 1fr 340px 1.1fr;
