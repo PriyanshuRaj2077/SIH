@@ -170,6 +170,7 @@ class TelemetryServer:
 
                     elif action == "clear_all_faults":
                         self.fault_injector.clear_all_faults()
+                        self.simulator.reset_to_nominal()
 
                     elif action == "toggle_simulation":
                         self.controls["simulation_running"] = not self.controls["simulation_running"]

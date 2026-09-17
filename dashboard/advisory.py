@@ -30,7 +30,11 @@ class AdvisoryGenerator:
 
         pilot_actions: List[str] = []
         maintenance_actions: List[str] = []
-        urgency: str = "NORMAL"
+        tactical_actions: List[str] = []
+        urgency: str = "NOMINAL"
+
+        is_anomaly = analytics_output.get("is_anomaly", False)
+        severity = analytics_output.get("severity", "NOMINAL")
 
         if fault_code == "F05":  # Lubrication failure
             urgency = "IMMEDIATE"
@@ -46,13 +50,19 @@ class AdvisoryGenerator:
                 "• Conduct oil pump gear backlash and scavenge pump check per Rotax Maintenance Manual Section 12-20.",
                 "• Bore-scope crankshaft main journals and connecting rod big-end bearings."
             ]
+            tactical_actions = [
+                "• Immediate Mission Abort (RTB): Discontinue tactical loiter and mission objectives immediately.",
+                "• Vector direct to primary emergency recovery runway or designated ditching waypoint.",
+                f"• Safe Window: Estimated {rul['display']} remaining before hydrodynamic oil film breakdown.",
+                "• Request priority airspace clearance and alert ground emergency crash tender."
+            ]
 
         elif fault_code == "F06":  # Overheating / Radiator
             urgency = "HIGH"
             pilot_actions = [
                 "1. Reduce throttle demand to 60% cruise setting.",
-                "2. Descend to denser, cooler air mass (e.g. below 10,000 ft) if mission airspace allows.",
-                "3. Increase airspeed to maximize radiator ram-air cooling velocity.",
+                "2. Descend to denser, cooler air mass (e.g. below 8,000 ft) if mission airspace allows.",
+                "3. Increase indicated airspeed to maximize radiator ram-air cooling velocity.",
                 "4. If CHT exceeds 145°C or coolant exceeds 115°C, initiate immediate forced descent and RTB."
             ]
             maintenance_actions = [
@@ -61,12 +71,18 @@ class AdvisoryGenerator:
                 "• Verify mechanical coolant pump impeller integrity and drive belt tension.",
                 "• Flush and bleed cylinder head cooling jackets."
             ]
+            tactical_actions = [
+                "• Flight Envelope Restriction: Continuous power capped at 60% MAP; climb maneuvers prohibited.",
+                "• Altimetry Directive: Descend into ambient cooler dense boundary layer to enhance heat rejection.",
+                "• Tactical Re-route: Establish direct course to recovery airfield with minimum thermal accumulation.",
+                "• Mission Decision: Abort persistent loiter; payload set to low-drag stow position."
+            ]
 
         elif fault_code == "F03":  # Injector Clog / Lean Burn
             urgency = "ELEVATED"
             pilot_actions = [
                 "1. Enrich air-fuel mixture command via ECU override or reduce throttle to 65%.",
-                "2. Avoid full-throttle climb which will trigger thermal valve seat burning.",
+                "2. Avoid full-throttle climb which will trigger localized thermal valve seat burning.",
                 "3. Continue mission on modified profile or return to base if CHT continues trending upward."
             ]
             maintenance_actions = [
@@ -74,6 +90,12 @@ class AdvisoryGenerator:
                 "• Replace inline fuel micro-filter (10 micron).",
                 "• Test fuel rail delivery pressure (nominal 3.0 bar) and flow bench calibrate injectors.",
                 "• Inspect affected cylinder combustion chamber with borescope for thermal discoloration."
+            ]
+            tactical_actions = [
+                "• Operational Envelope Restriction: Restrict ceiling to 14,000 ft MSL to avoid lean vaporization.",
+                "• Abort High-Demand Mission Legs: Cancel rapid climb or high-speed dash tasks.",
+                "• Thermal Monitoring: Commit to diversion airfield if cylinder EGT spread exceeds 45°C.",
+                "• Flight Route: Maintain flight within 30 NM radius of suitable recovery strip."
             ]
 
         elif fault_code == "F02":  # Ignition Misfire
@@ -87,6 +109,12 @@ class AdvisoryGenerator:
                 f"• Inspect and replace spark plugs on {diagnosis['subsystem']} (gap 0.6 - 0.7 mm).",
                 "• Check ignition coil secondary resistance and spark plug connector caps.",
                 "• Verify crankshaft trigger pickup gap (0.4 - 0.5 mm) and wiring harness continuity."
+            ]
+            tactical_actions = [
+                "• Dual-Lane Ignition Compromised: Engine redundancy depleted; no over-water or hostile penetration.",
+                "• Vibration Avoidance: Keep engine speed within 4,400 - 4,800 RPM to avoid airframe harmonic excitation.",
+                "• Direct Recovery Vector: Plan straight-in landing profile to minimize low-power throttle transients.",
+                "• Mission Clearance Revoked: Return to home base under precautionary caution rules."
             ]
 
         elif fault_code == "F08":  # Bearing Wear / Vibration
@@ -102,6 +130,12 @@ class AdvisoryGenerator:
                 "• Drain oil and check magnetic drain plug for ferrous metal fuzz.",
                 "• Measure crankshaft runout and propeller shaft radial play."
             ]
+            tactical_actions = [
+                "• Structural Fatigue Hazard: Limit airspeed and RPM to minimize gearbox / propeller resonance.",
+                "• Mission Termination: Abort reconnaissance mission immediately; proceed to nearest recovery base.",
+                "• Real-time Tracking: Continuous vibration telemetry monitoring; declare emergency if vib > 4.0 mm/s.",
+                "• Aerodynamic Cushion: Maintain safe altitude above minimum terrain clearance along route."
+            ]
 
         elif fault_code == "F01":  # Compression Loss
             urgency = "MODERATE"
@@ -115,6 +149,12 @@ class AdvisoryGenerator:
                 "• Bore-scope cylinder cross-hatch hone and piston crown for blowby scoring.",
                 "• Inspect intake and exhaust valve lash clearances."
             ]
+            tactical_actions = [
+                "• Thrust Margin Deficit: Recalculate climb capability and go-around margins.",
+                "• Low-Altitude Cruise: Settle at best-range airspeed (75 KIAS) with conservative throttle setting.",
+                "• Fuel Consumption Allowance: Budget 12% higher specific fuel consumption due to volumetric loss.",
+                "• Mission Revision: Downgrade from primary mission profile to direct return or low-workload loiter."
+            ]
 
         elif fault_code == "F11":  # Sensor Drift
             urgency = "LOW"
@@ -127,8 +167,35 @@ class AdvisoryGenerator:
                 "• Recalibrate or replace thermocouple probe.",
                 "• Verify avionics ADC wiring shielding and terminal block tightness."
             ]
+            tactical_actions = [
+                "• Analytic Redundancy Verified: Digital Twin confirms thermodynamic core integrity; no physical overheat.",
+                "• Mission Approval: Full mission envelope cleared; continue flight on remaining valid sensors.",
+                "• Telemetry Flag: Invalidate corrupted sensor channel in GCS display to avoid pilot distraction.",
+                "• Post-Flight Work: Schedule sensor replacement upon routine post-mission turnaround."
+            ]
 
-        else:
+        elif fault_code == "F99" or is_anomaly:  # Multi-parameter anomaly or unclassified anomaly
+            urgency = severity if severity in ("CRITICAL", "WARNING", "CAUTION") else "WARNING"
+            pilot_actions = [
+                "1. Reduce throttle demand to 65% cruise setting to alleviate coupled thermodynamic stress.",
+                "2. Cross-check analog flight instruments against digital twin residual predictions.",
+                "3. Maintain safe glide altitude; avoid steep bank angles or rapid throttle adjustments.",
+                "4. Establish communication with Mission Control; prepare for precautionary RTB if divergence widens."
+            ]
+            maintenance_actions = [
+                "• Download full 10 Hz high-rate telemetry flight recorder and EKF observer logs.",
+                "• Perform comprehensive multi-point ground engine run-up per Rotax Maintenance Manual Section 05-50.",
+                "• Inspect electrical grounding harness, ECU CAN bus termination, and sensor terminal shielding.",
+                "• Conduct differential compression check, spark plug check, and oil filter cut examination."
+            ]
+            tactical_actions = [
+                "• Envelope Restriction: Restrict flight envelope to straight-and-level transit; suspend aggressive maneuvers.",
+                "• Contingency Vector: Align flight path within safe gliding distance of alternate recovery airfields.",
+                "• Telemetry Downlink: Maintain continuous real-time telemetry link for remote engineering monitoring.",
+                "• Mission Decision: Abort to base if composite health index drops below 65% or divergence exceeds 3.5."
+            ]
+
+        else:  # Nominal healthy state
             urgency = "NOMINAL"
             pilot_actions = [
                 "• Powertrain operating within nominal green band.",
@@ -138,8 +205,13 @@ class AdvisoryGenerator:
             maintenance_actions = [
                 "• Routine post-flight pre-flight inspection at next 25-hour service interval."
             ]
+            tactical_actions = [
+                "• Mission GO: All propulsion subsystems operating with optimal thermodynamic margins.",
+                "• Full operational flight envelope approved across all flight phases.",
+                "• Closed-loop Digital Twin observer reports zero unmodeled physical divergence."
+            ]
 
-        advisory_title = f"{'ALERT - ANOMALY DETECTED: ' if analytics_output['is_anomaly'] else 'NOMINAL STATUS: '}{diagnosis['name'].upper()}"
+        advisory_title = f"{'ALERT - ANOMALY DETECTED: ' if is_anomaly else 'NOMINAL STATUS: '}{diagnosis['name'].upper()}"
 
         return {
             "title": advisory_title,
@@ -149,5 +221,6 @@ class AdvisoryGenerator:
             "root_cause_summary": diagnosis["root_cause"],
             "pilot_instructions": pilot_actions,
             "maintenance_instructions": maintenance_actions,
+            "tactical_recommendations": tactical_actions,
             "mission_decision": health_risk_output["recommendation"]
         }

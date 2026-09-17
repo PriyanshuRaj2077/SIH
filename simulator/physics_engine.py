@@ -52,13 +52,13 @@ class EnginePhysicsSimulator:
         self.vibration_rms: float = 0.5                      # Vibration RMS (mm/s)
         self.bus_voltage: float = 13.8                       # Alternator voltage (V)
 
-        # Thermal and rotational integration time constants (seconds)
+        # Thermal and rotational integration time constants (seconds, calibrated for flight ram-air flow)
         self.tau_rpm = 0.45
-        self.tau_cht = 5.5
+        self.tau_cht = 4.0
         self.tau_egt = 1.2
-        self.tau_oil_temp = 14.0
+        self.tau_oil_temp = 8.0
         self.tau_oil_pressure = 0.6
-        self.tau_coolant = 10.0
+        self.tau_coolant = 3.5
 
         # Sensor noise settings (standard deviations for Gaussian noise)
         self.noise_enabled = True
@@ -74,6 +74,19 @@ class EnginePhysicsSimulator:
             "vibration": 0.03,
             "bus_voltage": 0.04
         }
+
+    def reset_to_nominal(self):
+        """Immediately reset all physical temperatures, pressures and vibration to healthy nominal"""
+        self.rpm = 4160.0
+        self.cht = [100.5, 103.0, 103.0, 101.0]
+        self.egt = [745.0, 750.0, 755.0, 747.0]
+        self.oil_temp_c = 78.0
+        self.oil_pressure_bar = 4.25
+        self.coolant_temp_c = 78.5
+        self.map_kpa = 69.0
+        self.fuel_flow_lph = 12.0
+        self.vibration_rms = 0.5
+        self.bus_voltage = 13.8
 
     def compute_atmosphere(self, altitude_ft: float, ambient_temp_c: Optional[float] = None) -> Tuple[float, float, float]:
         """

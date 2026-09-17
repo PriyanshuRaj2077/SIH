@@ -141,6 +141,10 @@
   const advRootCause = document.getElementById('adv-root-cause');
   const advPilotList = document.getElementById('adv-pilot-list');
   const advMaintList = document.getElementById('adv-maint-list');
+  const advTacticalList = document.getElementById('adv-tactical-list');
+  const advBoxPilot = document.getElementById('adv-box-pilot');
+  const advBoxMaint = document.getElementById('adv-box-maint');
+  const advBoxTactical = document.getElementById('adv-box-tactical');
 
   // Canvases
   const canvasRpmMap = document.getElementById('chart-rpm-map');
@@ -518,7 +522,21 @@
     if (adv) {
       if (advTitle) advTitle.textContent = adv.title;
       if (advRootCause) advRootCause.textContent = adv.root_cause_summary;
-      if (advBadgeUrgency) advBadgeUrgency.textContent = adv.urgency;
+
+      if (advBadgeUrgency) {
+        advBadgeUrgency.textContent = adv.urgency;
+        advBadgeUrgency.className = 'status-chip mono';
+        const u = (adv.urgency || '').toUpperCase();
+        if (u === 'IMMEDIATE' || u === 'CRITICAL' || u === 'HIGH') {
+          advBadgeUrgency.classList.add('chip-crit');
+        } else if (u === 'WARNING' || u === 'ELEVATED') {
+          advBadgeUrgency.classList.add('chip-warn');
+        } else if (u === 'CAUTION' || u === 'MODERATE' || u === 'LOW') {
+          advBadgeUrgency.classList.add('chip-caution');
+        } else {
+          advBadgeUrgency.classList.add('chip-nominal');
+        }
+      }
 
       if (cardAdvisory) {
         if (analytics && analytics.is_anomaly) {
@@ -530,11 +548,15 @@
 
       // Pilot list
       if (advPilotList && adv.pilot_instructions) {
-        advPilotList.innerHTML = adv.pilot_instructions.map(item => `<li>${item.replace(/^[0-9]+\.\s*/, '')}</li>`).join('');
+        advPilotList.innerHTML = adv.pilot_instructions.map(item => `<li>${item.replace(/^[0-9]+\.\s*/, '').replace(/^•\s*/, '')}</li>`).join('');
       }
       // Maintenance list
       if (advMaintList && adv.maintenance_instructions) {
-        advMaintList.innerHTML = adv.maintenance_instructions.map(item => `<li>${item.replace(/^•\s*/, '')}</li>`).join('');
+        advMaintList.innerHTML = adv.maintenance_instructions.map(item => `<li>${item.replace(/^[0-9]+\.\s*/, '').replace(/^•\s*/, '')}</li>`).join('');
+      }
+      // Tactical recommendations list
+      if (advTacticalList && adv.tactical_recommendations) {
+        advTacticalList.innerHTML = adv.tactical_recommendations.map(item => `<li>${item.replace(/^[0-9]+\.\s*/, '').replace(/^•\s*/, '')}</li>`).join('');
       }
     }
 
@@ -813,12 +835,33 @@
       });
     });
 
-    // Advisory category pill toggles
+    // Advisory category pill toggles & box switching (Pilot Directives / Maintenance / Tactical Recommendations)
     const advChips = document.querySelectorAll('.adv-chip');
+    const advBoxes = {
+      pilot: document.getElementById('adv-box-pilot'),
+      maint: document.getElementById('adv-box-maint'),
+      tactical: document.getElementById('adv-box-tactical')
+    };
+
     advChips.forEach(chip => {
       chip.addEventListener('click', () => {
-        advChips.forEach(c => c.classList.remove('active'));
+        const tabKey = chip.getAttribute('data-tab') || 'pilot';
+        advChips.forEach(c => {
+          c.classList.remove('active');
+          c.setAttribute('aria-selected', 'false');
+        });
         chip.classList.add('active');
+        chip.setAttribute('aria-selected', 'true');
+
+        Object.entries(advBoxes).forEach(([k, box]) => {
+          if (box) {
+            if (k === tabKey) {
+              box.classList.remove('is-hidden');
+            } else {
+              box.classList.add('is-hidden');
+            }
+          }
+        });
       });
     });
   }

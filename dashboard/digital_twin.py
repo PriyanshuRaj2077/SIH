@@ -233,21 +233,38 @@ class DigitalTwin:
         self.x = self.x + K @ y_innov
         self.P = (np.eye(7) - K @ H) @ self.P
 
-        # Update and clamp degradation parameter estimates
-        self.eta_vol = float(np.clip(self.x[4], 0.45, 1.0))
-        self.eta_comb = float(np.clip(self.x[5], 0.50, 1.0))
-        self.eta_mech = float(np.clip(self.x[6], 0.40, 1.0))
+        # Target degradation baseline
+        target_eta_vol = BASELINE_ETA_VOL
+        target_eta_mech = BASELINE_ETA_MECH
+        target_eta_comb = BASELINE_ETA_COMB
 
-        # Adjust degradation parameters if physical residuals strongly point to specific loss
-        # E.g. Compression loss reduces volumetric efficiency estimate
-        if diff_map < -8.0 and diff_rpm < -150.0:
-            self.eta_vol = min(self.eta_vol, BASELINE_ETA_VOL * 0.72)
-        # Lubrication failure reduces mechanical efficiency estimate
-        if diff_oil_p < -1.5:
-            self.eta_mech = min(self.eta_mech, BASELINE_ETA_MECH * 0.65)
-        # Combustion misfire reduces combustion efficiency estimate
-        if any(e < -150.0 for e in diff_egt):
-            self.eta_comb = min(self.eta_comb, BASELINE_ETA_COMB * 0.75)
+        # 1. Volumetric Efficiency Degradation (Compression loss / Blowby / Intake restriction)
+        if (diff_map < -2.5 and diff_oil_p > -0.5) or (diff_map < -1.0 and diff_rpm < -20.0):
+            map_ratio = max(0.5, min(1.0, tel.map_kpa / max(10.0, expected["map_kpa"])))
+            target_eta_vol = BASELINE_ETA_VOL * map_ratio
+
+        # 2. Mechanical Efficiency Degradation (Lubrication failure / Bearing wear friction)
+        if diff_oil_p < -0.4:
+            oil_drop_ratio = min(1.0, abs(diff_oil_p) / max(1.0, expected["oil_pressure_bar"]))
+            target_eta_mech = min(target_eta_mech, BASELINE_ETA_MECH * max(0.55, 1.0 - 0.45 * oil_drop_ratio))
+        if diff_vib > 0.8:
+            target_eta_mech = min(target_eta_mech, BASELINE_ETA_MECH * max(0.65, 1.0 - 0.08 * diff_vib))
+
+        # 3. Combustion Efficiency Degradation (Ignition misfire / Injector restriction)
+        if any(e < -40.0 for e in diff_egt):
+            egt_drop = abs(min(diff_egt))
+            target_eta_comb = BASELINE_ETA_COMB * max(0.60, 1.0 - 0.35 * (egt_drop / 260.0))
+        elif any(e > 45.0 for e in diff_egt) and (max(diff_egt) - min(diff_egt) > 35.0):
+            target_eta_comb = BASELINE_ETA_COMB * 0.88
+
+        # Smooth continuous tracking with first-order filter (fast adaptation & recovery)
+        self.eta_vol += 0.25 * (target_eta_vol - self.eta_vol)
+        self.eta_mech += 0.25 * (target_eta_mech - self.eta_mech)
+        self.eta_comb += 0.25 * (target_eta_comb - self.eta_comb)
+
+        self.x[4] = self.eta_vol
+        self.x[5] = self.eta_comb
+        self.x[6] = self.eta_mech
 
         # 4. Normalized Residuals (Z-scores)
         z_scores = {

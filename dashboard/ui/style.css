@@ -746,7 +746,8 @@ body.aerospace-theme {
   animation: pageFadeIn 0.24s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-.page-view.is-hidden {
+.page-view.is-hidden,
+.is-hidden {
   display: none !important;
 }
 
@@ -2241,7 +2242,45 @@ body.aerospace-theme {
 }
 
 .card-advisory.card-alarm {
-  border-color: var(--status-caution-border);
+  border-color: rgba(239, 68, 68, 0.45);
+  box-shadow: 0 0 24px rgba(239, 68, 68, 0.14);
+}
+
+/* Urgency Status Badges */
+.status-chip.chip-crit {
+  background: rgba(239, 68, 68, 0.18) !important;
+  border-color: rgba(239, 68, 68, 0.55) !important;
+  color: #EF4444 !important;
+  font-weight: 700;
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.3);
+  animation: pulse-badge-crit 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse-badge-crit {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.85; transform: scale(1.02); }
+}
+
+.status-chip.chip-warn {
+  background: rgba(245, 158, 11, 0.18) !important;
+  border-color: rgba(245, 158, 11, 0.55) !important;
+  color: #F59E0B !important;
+  font-weight: 700;
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.2);
+}
+
+.status-chip.chip-caution {
+  background: rgba(250, 204, 21, 0.15) !important;
+  border-color: rgba(250, 204, 21, 0.45) !important;
+  color: #FACC15 !important;
+  font-weight: 700;
+}
+
+.status-chip.chip-nominal {
+  background: rgba(57, 211, 83, 0.12) !important;
+  border-color: rgba(57, 211, 83, 0.35) !important;
+  color: #39D353 !important;
+  font-weight: 600;
 }
 
 .advisory-category-chips {
@@ -2251,7 +2290,7 @@ body.aerospace-theme {
 }
 
 .adv-chip {
-  padding: 4px 12px;
+  padding: 5px 14px;
   border-radius: var(--radius-pill);
   font-size: 11px;
   font-weight: 500;
@@ -2259,6 +2298,13 @@ body.aerospace-theme {
   background: var(--card-inset);
   border: 1px solid var(--border-subtle);
   cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.adv-chip:hover {
+  color: var(--text-main);
+  background: var(--card-bg-hover);
+  border-color: var(--border-card);
 }
 
 .adv-chip.active {
@@ -2266,6 +2312,7 @@ body.aerospace-theme {
   color: var(--accent-yellow);
   border-color: var(--accent-yellow-border);
   font-weight: 600;
+  box-shadow: 0 0 10px var(--accent-yellow-glow);
 }
 
 .advisory-directive-box {
@@ -2276,6 +2323,18 @@ body.aerospace-theme {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  animation: directiveBoxFadeIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes directiveBoxFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .adv-box-header {
